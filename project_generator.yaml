@@ -1,0 +1,13 @@
+generation_config:
+  project_name_template: "autoevolve_{task_type}_{timestamp}"
+
+  output:
+    base_dir: "/home/speaker/origin_ws/generated_projects"
+    overwrite: false
+    create_git_repo: true
+
+  quality:
+    require_tests: true
+    require_docs: true
+    min_test_coverage: 70
+    lint_check: true

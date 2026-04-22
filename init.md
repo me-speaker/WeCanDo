@@ -1,892 +1,1143 @@
-此Markdown文档直接用于Claude Code构建初始化项目。这份文档包含了详细的项目结构、配置文件和实现指南。
+# AutoEvolve Company - AI Agent Team 快速项目生成系统
 
-AutoEvolve Company - AI Agent团队架构文档
+版本: 2.0
+日期: 2026-04-22
+状态: 草案
 
-版本: 1.0  
-日期: 2026-04-22  
-状态: 最终版
+---
 
-📋 目录
+## 1. 核心定位
 
-架构概述
-核心设计理念
-Agent团队架构
-Skill Hub设计
-项目结构规范
-实现方法
-自我迭代机制
-最佳实践
-附录
+**目标**：基于 Claude Code Team 模式，配合最小原型文件夹，实现任意项目系统的快速生成。
 
-架构概述
+**核心思路**：
 
-1.1 核心定位
+```
+用户请求 → CEO Agent（LLM驱动）→ Claude Code Team 执行
+                ↓
+        读取 .company/ 配置
+        使用 agents/ 中的角色定义
+        按照 skill_hub/ 分配任务
+        在目标目录生成完整项目
+```
+
+---
 
-AutoEvolve Company 是一个可自我迭代的智能AI Agent团队，旨在将用户需求转化为完整的软件项目，同时具备持续学习和优化的能力。
-
-1.2 角色定义
-角色   定位   职责
-用户   客户   提出需求，验收成果
-
-项目   智能公司体   自主运作，持续进化
-
-1.3 核心特性
-
-动态Agent激活：按需激活Agent，优化Token消耗
-开源Skill优先：优先使用成熟的开源实现
-自我迭代能力：内置反馈循环，持续优化
-模块化设计：易于扩展和维护
-
-核心设计理念
-
-2.1 客户-公司体模型
-
-用户（客户） → 提出需求
-    ↓
-AutoEvolve Company（公司体） → 自主执行
-    ↓
-完整软件项目 ← 交付产物
-
-2.2 三层架构
-
-战略层（CEO Agent）
-    ↓
-分析层（需求分析师 + 架构设计师）
-    ↓
-执行层（开发工程师 + 测试工程师 + 交付工程师）
-
-2.3 动态激活原则
-
-简单任务：激活3个Agent
-中等任务：激活5个Agent
-复杂任务：激活6个Agent
-
-Agent团队架构
-
-3.1 核心Agent列表
-Agent   类型   职责   激活条件
-CEO Agent   战略层   战略决策、资源调度、自我进化   始终激活
-
-需求分析师   分析层   需求解析、任务分类、技能识别   始终激活
-
-架构设计师   分析层   系统架构、模块划分、技术选型   复杂任务
-
-开发工程师   执行层   核心代码实现、模块集成   所有任务
-
-测试工程师   执行层   单元测试、集成测试、质量保障   中/复杂任务
-
-交付工程师   执行层   打包部署、文档生成、GUI设计   中/复杂任务
-
-3.2 Agent职责详解
-
-3.2.1 CEO Agent（战略层）
-
-核心职责：
-接收用户需求
-决定激活哪些Agent
-协调Agent间协作
-收集反馈并优化策略
-管理Skill Hub
-
-决策流程：
-
-接收需求 → 评估复杂度 → 决定激活策略 → 监控执行 → 收集反馈 → 优化策略
-
-3.2.2 需求分析师（分析层）
-
-核心职责：
-解析用户需求文本
-识别任务类型（简单/中等/复杂）
-提取关键要素（数据、目标、约束）
-识别所需技能
-
-输出物：
-yaml
-requirements:
-  task_type: multi_objective_optimization
-  complexity: complex
-  data:
-    source: data/reaction_data.csv
-    features: [temperature, pressure, catalyst_type]
-  goals:
-    maximize: yield
-    minimize: energy_consumption
-  delivery:
-    gui_required: true
-    documentation_required: true
-
-3.2.3 架构设计师（分析层）
-
-核心职责：
-设计系统架构
-划分功能模块
-选择技术栈
-定义模块接口
-
-激活条件：仅当任务复杂度为"复杂"时激活
-
-输出物：
-yaml
-architecture:
-  modules:
-    name: data_processing
-      responsibility: "数据加载与预处理"
-      dependencies: []
-    name: optimization_engine
-      responsibility: "多目标优化算法"
-      dependencies: [data_processing]
-    name: gui_interface
-      responsibility: "可视化界面"
-      dependencies: [optimization_engine]
-  technology_stack:
-    language: python
-    frameworks: [pymoo, streamlit]
-
-3.2.4 开发工程师（执行层）
-
-核心职责：
-根据架构设计实现代码
-调用Skill Hub中的技能
-进行模块集成
-编写代码注释
-
-输出物：
-src/ 目录下的所有源代码
-代码注释和文档字符串
-
-3.2.5 测试工程师（执行层）
-
-核心职责：
-生成单元测试
-生成集成测试
-执行测试并报告结果
-识别代码质量问题
-
-激活条件：任务复杂度为"中等"或"复杂"时激活
-
-输出物：
-tests/unit/ 单元测试
-tests/integration/ 集成测试
-test_report.md 测试报告
-
-3.2.6 交付工程师（执行层）
-
-核心职责：
-生成GUI界面（如需要）
-打包项目（setup.py, Dockerfile）
-生成技术文档
-生成用户手册
-
-激活条件：任务复杂度为"中等"或"复杂"时激活
-
-输出物：
-deployment/ 部署文件
-docs/ 文档
-src/gui/ GUI代码（如需要）
-
-3.3 Agent激活策略
-
-3.3.1 任务复杂度判断标准
-复杂度   判断标准   激活Agent数量
-简单   单一模块、无需测试、无需文档   3个
-
-中等   多个模块、需要测试、需要文档   5个
-
-复杂   系统级、多目标优化、GUI需求   6个
-
-3.3.2 激活流程
-
-需求分析师解析需求，判断复杂度
-CEO Agent根据复杂度决定激活策略
-激活对应Agent
-Agent执行任务
-任务完成后，闲置Agent休眠
-
-Skill Hub设计
-
-4.1 三层Skill体系
-
-Skill Hub
-├── 核心Skill（core/）
-│   └── 自研的基础技能
-├── 开源Skill（oss/）
-│   └── 接入的优秀开源库
-└── 进化Skill（evolved/）
-    └── 基于历史模式生成的新技能
-
-4.2 Skill注册机制
-
-4.2.1 注册表格式
-
-yaml
-skill_hub/registry.yaml
-skill_registry:
-  # 核心Skill
-  data_loading:
-    type: core
-    priority: 10
-    tags: [data, loading]
-    description: "加载和解析数据文件"
-  
-  # 开源Skill（高优先级）
-  nsga2_optimization:
-    type: oss
-    priority: 15
-    tags: [optimization, multi-objective]
-    dependencies:
-      pymoo>=0.6.0
-    description: "基于NSGA-II的多目标优化"
-  
-  # 可视化
-  pareto_plot:
-    type: oss
-    priority: 12
-    tags: [visualization, plotting]
-    dependencies:
-      plotly>=5.0.0
-    description: "帕累托前沿可视化"
-
-4.2.2 优先级规则
-
-开源Skill优先级最高（15-20）
-核心Skill中等优先级（8-12）
-进化Skill动态调整（初始10，根据表现调整）
-
-4.3 Skill接入规范
-
-4.3.1 标准化接口
-
-所有Skill必须遵循以下接口：
-
-yaml
-input:
-  name: data
-    type: DataFrame
-    description: "输入数据"
-  name: parameters
-    type: dict
-    description: "算法参数"
-
-output:
-  name: result
-    type: dict
-    description: "执行结果"
-  name: metadata
-    type: dict
-    description: "元数据（性能指标等）"
-
-4.3.2 依赖管理
-
-yaml
-dependencies:
-  package_name>=version
-  package_name==version
-
-4.4 Skill加载策略
-
-4.4.1 懒加载机制
-
-初始加载：仅加载核心Skill摘要（~100 token）
-按需加载：任务需要时再加载完整Skill描述
-缓存机制：常用Skill缓存在内存中
-
-4.4.2 技能选择流程
-
-需求分析师识别所需技能标签
-Skill Hub根据标签和优先级筛选候选技能
-选择优先级最高的技能
-加载技能并执行
-
-项目结构规范
-
-5.1 完整项目结构
-
-autoevolve_company/
-│
-├── .company/                          # 公司体核心配置
-│   ├── ceo_config.yaml                # CEO配置
-│   ├── skill_registry.yaml            # Skill注册表
-│   ├── memory/                        # 公司记忆库
-│   │   ├── successful_patterns.json   # 成功模式
-│   │   ├── skill_performance.json     # Skill表现
-│   │   └── task_templates.json        # 任务模板
-│   └── evolution_log/                 # 进化日志
-│       └── YYYY-MM-DD_HH-MM-SS.json   # 每次进化的记录
-│
-├── skill_hub/                         # Skill中心
-│   ├── registry.yaml                  # Skill注册总表
-│   ├── core/                          # 核心Skill
-│   │   ├── data_processing.yaml
-│   │   ├── model_building.yaml
-│   │   └── testing.yaml
-│   ├── oss/                           # 开源Skill
-│   │   ├── README.md                  # 接入指南
-│   │   ├── optimization/
-│   │   │   ├── nsga2_pymoo.yaml
-│   │   │   └── bayesian_optuna.yaml
-│   │   └── custom_oss_skills/         # 用户自定义
-│   └── evolved/                       # 进化Skill
-│       └── (自动生成)
-│
-├── src/                               # 源代码
-│   ├── data/                          # 数据处理
-│   │   ├── init.py
-│   │   ├── loader.py
-│   │   └── preprocessing.py
-│   ├── models/                        # 模型
-│   │   ├── init.py
-│   │   └── architecture.py
-│   ├── optimization/                  # 优化
-│   │   ├── init.py
-│   │   └── engine.py
-│   ├── gui/                           # GUI（如需要）
-│   │   ├── init.py
-│   │   └── app.py
-│   └── init.py
-│
-├── tests/                             # 测试
-│   ├── unit/                          # 单元测试
-│   │   ├── test_data.py
-│   │   ├── test_models.py
-│   │   └── test_optimization.py
-│   ├── integration/                   # 集成测试
-│   │   └── test_e2e.py
-│   ├── init.py
-│   └── test_report.md                 # 测试报告
-│
-├── deployment/                        # 部署
-│   ├── Dockerfile
-│   ├── setup.py
-│   ├── requirements.txt
-│   └── config/
-│       └── default.yaml
-│
-├── docs/                              # 文档
-│   ├── api/                           # API文档
-│   │   ├── modules.md
-│   │   └── reference.md
-│   ├── user_guide/                    # 用户手册
-│   │   ├── quick_start.md
-│   │   ├── examples.md
-│   │   └── faq.md
-│   ├── architecture.md                # 架构说明
-│   └── index.md
-│
-├── experiments/                       # 实验记录
-│   ├── runs/
-│   └── results/
-│
-├── README.md                          # 项目说明
-├── .gitignore
-└── LICENSE
-
-5.2 配置文件详解
-
-5.2.1 CEO配置（.company/ceo_config.yaml）
-
-yaml
-ceo_config:
-  # 激活策略
-  activation_strategy:
-    simple_task:
-      agents: [ceo, requirements_analyst, developer]
-      max_token_budget: 1000
-    medium_task:
-      agents: [ceo, requirements_analyst, developer, tester, deliverer]
-      max_token_budget: 2000
-    complex_task:
-      agents: [ceo, requirements_analyst, architect, developer, tester, deliverer]
-      max_token_budget: 3000
-  
-  # 进化策略
-  evolution:
-    feedback_collection: true
-    skill_weight_adjustment: true
-    pattern_learning: true
-    evolution_frequency: per_task
-  
-  # Skill Hub配置
-  skill_hub:
-    lazy_loading: true
-    cache_size: 10
-    priority_threshold: 8
-
-5.2.2 Skill注册表（skill_hub/registry.yaml）
-
-yaml
-skill_registry:
-  version: "1.0"
-  last_updated: "2026-04-22"
-  
-  skills:
-    # 核心Skill
-    data_loading:
-      type: core
-      priority: 10
-      tags: [data, loading, preprocessing]
-      input_schema:
-        file_path: string
-        format: string (csv, excel, json)
-      output_schema:
-        data: DataFrame
-        metadata: dict
-    
-    # 开源Skill
-    nsga2_optimization:
-      type: oss
-      priority: 15
-      tags: [optimization, multi-objective, evolutionary]
-      dependencies:
-        pymoo>=0.6.0
-      input_schema:
-        objectives: list
-        constraints: list
-        bounds: dict
-      output_schema:
-        solutions: list
-        pareto_front: list
-    
-    # 可视化
-    pareto_plot:
-      type: oss
-      priority: 12
-      tags: [visualization, plotting, pareto]
-      dependencies:
-        plotly>=5.0.0
-      input_schema:
-        solutions: list
-        objectives: list
-      output_schema:
-        figure: Figure
-        html_path: string
-
-实现方法
-
-6.1 实现步骤
-
-阶段1：基础框架（第1-2周）
-
-目标：实现最小可行版本
-
-任务清单：
-[ ] 实现CEO Agent基础框架
-[ ] 实现需求分析师
-[ ] 实现开发工程师
-[ ] 实现Skill Hub基础结构
-[ ] 实现动态激活机制
-
-验收标准：
-能够处理简单任务（单模块开发）
-Token消耗控制在1000以内
-生成的代码可运行
-
-阶段2：质量保障（第3-4周）
-
-目标：添加测试和文档能力
-
-任务清单：
-[ ] 实现测试工程师
-[ ] 实现交付工程师
-[ ] 实现测试生成Skill
-[ ] 实现文档生成Skill
-[ ] 集成开源测试框架
-
-验收标准：
-能够生成单元测试
-能够生成基础文档
-测试覆盖率达到70%
-
-阶段3：架构优化（第5-6周）
-
-目标：支持复杂任务
-
-任务清单：
-[ ] 实现架构设计师
-[ ] 实现系统架构设计Skill
-[ ] 优化Agent协作流程
-[ ] 添加复杂任务示例
-
-验收标准：
-能够处理多模块项目
-能够生成合理的系统架构
-支持模块间依赖管理
-
-阶段4：自我迭代（第7-8周）
-
-目标：实现自我进化能力
-
-任务清单：
-[ ] 实现反馈收集机制
-[ ] 实现Skill权重调整
-[ ] 实现模式学习
-[ ] 实现进化日志
-
-验收标准：
-能够收集多维度反馈
-能够基于反馈优化策略
-进化过程可追溯
-
-6.2 关键实现要点
-
-6.2.1 Agent通信协议
-
-轻量级通信格式：
-
-[发件人] → [收件人]: [消息类型] | [内容摘要]
-
-示例：
-需求分析师 → CEO: TASK_CLASSIFICATION | type=complex, skills=[data,opt,gui]
-CEO → 架构设计师: ACTIVATE | task_id=12345
-架构设计师 → 开发工程师: ARCHITECTURE_READY | modules=[data,opt,gui]
-
-6.2.2 上下文管理
-
-上下文压缩策略：
-移除冗余：删除重复描述
-提取关键：保留核心信息
-生成摘要：用摘要代替详细描述
-引用机制：用引用代替完整内容
-
-示例：
-yaml
-压缩前
-开发工程师需要实现数据加载模块，该模块需要：
-读取CSV文件
-处理缺失值
-标准化数据
-返回DataFrame
-
-压缩后
-开发工程师: 实现 data_loading (CSV→DataFrame, 处理缺失, 标准化)
-
-6.2.3 Skill执行流程
-
-接收任务请求
-解析所需技能标签
-从Skill Hub查询候选技能
-选择优先级最高的技能
-加载技能描述
-执行技能
-返回结果
-记录执行日志
-
-6.3 技术选型建议
-
-6.3.1 基础设施
-组件   推荐方案   说明
-编程语言   Python 3.10+   生态丰富，AI支持好
-
-配置管理   YAML   人类可读，易于维护
-
-日志系统   JSON + timestamp   结构化，便于分析
-
-缓存机制   LRU Cache   简单高效
-
-6.3.2 开源Skill接入
-领域   推荐库   用途
-优化   pymoo, optuna   多目标优化、超参优化
-
-数据处理   pandas, scikit-learn   数据加载、预处理
-
-可视化   plotly, matplotlib   结果可视化
-
-测试   pytest   单元测试框架
-
-GUI   streamlit, gradio   快速GUI开发
-
-自我迭代机制
-
-7.1 反馈收集
-
-7.1.1 反馈维度
-维度   指标   收集方式
-代码质量   可读性(1-5)、规范性(通过/失败)、性能(执行时间)   静态分析 + 运行测试
-
-Agent表现   任务完成度(0-100%)、错误率(%)、响应时间   执行日志
-
-Skill表现   执行成功率(%)、输出质量(1-5)、资源消耗   Skill执行日志
-
-客户满意度   需求满足度(1-5)、交付质量(1-5)   用户反馈（可选）
-
-7.1.2 反馈格式
-
-json
+## 2. 与 Claude Code Team 的集成架构
+
+### 2.1 架构对比
+
+| 维度 | 传统 Claude Code | 我们构建的系统 |
+|------|-----------------|---------------|
+| Agent 数量 | 1 (Claude) | 多 (6个专业 Agent) |
+| 任务分配 | 人工判断 | CEO 自动决策 |
+| 代码生成 | 单一 Claude | 多 Agent 协作 |
+| 项目结构 | 手动创建 | 自动生成 |
+
+### 2.2 CEO 到 Claude Code Team 的桥接
+
+```
+当前架构 (Python 类):
+User → CEO.process() → if/else → return
+
+桥接后的架构 (LLM 驱动):
+User → CEO.think() → LLM API → 决策 → Claude Code Team 执行
+```
+
+### 2.3 桥接组件设计
+
+```
+/home/speaker/origin_ws/ai_company/
+├── bridge/
+│   ├── team_connector.py    # 连接 CEO 和 Claude Code Team
+│   ├── task_executor.py     # 执行生成的任务
+│   └── project_scaffold.py  # 项目脚手架生成器
+```
+
+**team_connector.py**:
+
+```python
+"""CEO Agent 到 Claude Code Team 的桥接器"""
+import json
+import subprocess
+from pathlib import Path
+from typing import Dict, Any, Optional
+
+class TeamConnector:
+    """将 CEO 的决策转换为 Claude Code Team 执行的桥梁"""
+
+    def __init__(self, project_root: Path):
+        self.project_root = project_root
+        self.active_agents: Dict[str, Any] = {}
+
+    def execute_agent_task(self, agent_name: str, task: Dict[str, Any]) -> Dict[str, Any]:
+        """在 Claude Code Team 中执行指定 Agent 的任务"""
+        prompt = self._build_agent_prompt(agent_name, task)
+
+        # 调用 Claude Code 执行
+        result = self._call_claude_code(
+            system_prompt=self._get_agent_system_prompt(agent_name),
+            user_prompt=prompt,
+            task_context=task
+        )
+
+        return result
+
+    def _get_agent_system_prompt(self, agent_name: str) -> str:
+        """获取各 Agent 的 system prompt"""
+        prompts = {
+            "requirements_analyst": """You are the Requirements Analyst Agent.
+分析用户需求，输出结构化的任务定义。""",
+
+            "architect": """You are the Architect Agent.
+设计系统架构和模块划分。""",
+
+            "developer": """You are the Developer Agent.
+根据需求和架构实现代码。""",
+
+            "tester": """You are the Tester Agent.
+编写和执行测试。""",
+
+            "delivery": """You are the Delivery Agent.
+打包和部署项目。"""
+        }
+        return prompts.get(agent_name, "")
+
+    def _build_agent_prompt(self, agent_name: str, task: Dict[str, Any]) -> str:
+        """构建 Agent 的任务 prompt"""
+        return f"""
+Task: {task.get('description', 'No description')}
+Target: {task.get('target_path', 'src/')}
+Requirements: {json.dumps(task.get('requirements', {}), indent=2)}
+
+Please execute this task and report results.
+"""
+
+    def _call_claude_code(self, system_prompt: str, user_prompt: str, task_context: Dict) -> Dict[str, Any]:
+        """实际调用 Claude Code 执行"""
+        # TODO: 实现与 Claude Code 的实际连接
+        # 可能的实现方式:
+        # 1. 使用 Claude API 直接调用
+        # 2. 使用 Claude Code 的 CLI 接口
+        # 3. 使用 MCP 协议连接
+        pass
+
+    def spawn_team(self, agent_list: list) -> None:
+        """在 Claude Code Team 模式下启动多个 Agent"""
+        for agent in agent_list:
+            self.active_agents[agent] = {
+                "status": "active",
+                "task": None
+            }
+
+    def delegate_task(self, agent: str, task: Dict[str, Any]) -> None:
+        """向指定 Agent 分发任务"""
+        if agent in self.active_agents:
+            self.active_agents[agent]["task"] = task
+            result = self.execute_agent_task(agent, task)
+            self.active_agents[agent]["result"] = result
+
+    def sync_team_status(self) -> Dict[str, Any]:
+        """同步团队状态"""
+        return {
+            agent: info["status"]
+            for agent, info in self.active_agents.items()
+        }
+```
+
+---
+
+## 3. LLM-Native Agent 改造方案
+
+### 3.1 改造目标
+
+所有 Agent 必须具备：
+- LLM 推理能力（调用 Claude API）
+- 自主决策能力
+- 上下文记忆
+
+### 3.2 BaseAgent LLM 改造
+
+**agents/base.py 改造后**:
+
+```python
+"""Base Agent - LLM Native 版本"""
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+import anthropic
+
+class AgentStatus(Enum):
+    IDLE = "idle"
+    ACTIVE = "active"
+    THINKING = "thinking"
+    WAITING = "waiting"
+    COMPLETED = "completed"
+    ERROR = "error"
+
+@dataclass
+class AgentMessage:
+    sender: str
+    recipient: str
+    msg_type: str
+    content: Any
+    timestamp: datetime = field(default_factory=datetime.now)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class ToolDefinition:
+    name: str
+    description: str
+    input_schema: dict
+
+class BaseAgent(ABC):
+    """LLM-Native 基础 Agent 类"""
+
+    def __init__(self, name: str, agent_type: str):
+        self.name = name
+        self.agent_type = agent_type
+        self.status = AgentStatus.IDLE
+        self.context: Dict[str, Any] = {}
+        self._message_queue: List[AgentMessage] = []
+
+        # LLM 配置
+        self.client = anthropic.Anthropic()
+        self.model = "claude-opus-4-6"
+        self.max_tokens = 4096
+
+        # 消息历史 (用于 LLM 上下文)
+        self.message_history: List[Dict[str, str]] = []
+
+    @abstractmethod
+    def _get_system_prompt(self) -> str:
+        """子类必须定义自己的 system prompt"""
+        pass
+
+    @abstractmethod
+    def _get_tools(self) -> List[ToolDefinition]:
+        """子类必须定义可用的工具"""
+        pass
+
+    def think(self, user_message: str) -> str:
+        """核心 LLM 调用方法"""
+        self.status = AgentStatus.THINKING
+
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=self._get_system_prompt(),
+            messages=[{"role": "user", "content": user_message}],
+            tools=[self._tool_to_openai(t) for t in self._get_tools()]
+        )
+
+        self.status = AgentStatus.ACTIVE
+        return response.content[0].text
+
+    def think_with_history(self, user_message: str) -> str:
+        """带历史记录的 LLM 调用"""
+        messages = self.message_history + [{"role": "user", "content": user_message}]
+
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=self._get_system_prompt(),
+            messages=messages,
+            tools=[self._tool_to_openai(t) for t in self._get_tools()]
+        )
+
+        # 更新历史
+        self.message_history.append({"role": "user", "content": user_message})
+        self.message_history.append({"role": "assistant", "content": response.content[0].text})
+
+        return response.content[0].text
+
+    def _tool_to_openai(self, tool: ToolDefinition) -> dict:
+        """转换工具定义为 OpenAI 格式"""
+        return {
+            "type": "function",
+            "function": {
+                "name": tool.name,
+                "description": tool.description,
+                "parameters": tool.input_schema
+            }
+        }
+
+    @abstractmethod
+    def process(self, message: AgentMessage) -> Optional[AgentMessage]:
+        """处理消息的抽象方法"""
+        pass
+
+    def send_message(self, recipient: str, msg_type: str, content: Any, metadata: Optional[Dict[str, Any]] = None) -> AgentMessage:
+        """创建并返回消息"""
+        return AgentMessage(
+            sender=self.name,
+            recipient=recipient,
+            msg_type=msg_type,
+            content=content,
+            metadata=metadata or {}
+        )
+
+    def receive_message(self, message: AgentMessage) -> None:
+        """接收消息到队列"""
+        if self.can_handle(message):
+            self._message_queue.append(message)
+
+    def can_handle(self, message: AgentMessage) -> bool:
+        """检查是否处理此消息"""
+        return message.recipient == self.name
+
+    def get_next_message(self) -> Optional[AgentMessage]:
+        """获取下一条消息"""
+        if self._message_queue:
+            return self._message_queue.pop(0)
+        return None
+
+    def clear_queue(self) -> None:
+        """清空队列"""
+        self._message_queue.clear()
+```
+
+### 3.3 CEO Agent LLM 改造
+
+**agents/ceo.py 改造后**:
+
+```python
+"""CEO Agent - LLM Native 版本"""
+import yaml
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from .base import BaseAgent, AgentMessage, AgentStatus, ToolDefinition
+
+class CEOAgent(BaseAgent):
+    """CEO Agent - 战略决策者，驱动整个系统"""
+
+    def __init__(self, config_path: str = "/home/speaker/origin_ws/ai_company/.company/ceo_config.yaml"):
+        super().__init__(name="ceo", agent_type="orchestrator")
+        self.config_path = config_path
+        self.config = self._load_config()
+        self.active_agents: List[str] = []
+
+    def _load_config(self) -> Dict[str, Any]:
+        """加载 CEO 配置"""
+        path = Path(self.config_path)
+        if path.exists():
+            with open(path, 'r') as f:
+                return yaml.safe_load(f)
+        return {}
+
+    def _get_system_prompt(self) -> str:
+        return """You are the CEO Agent of AutoEvolve Company.
+
+Your responsibilities:
+1. Analyze incoming user requests
+2. Determine task complexity (simple/medium/complex)
+3. Decide which agents to activate
+4. Delegate tasks to appropriate agents
+5. Monitor progress and coordinate workflow
+6. Ensure quality and timely delivery
+
+You have access to these agents:
+- requirements_analyst: Analyzes and parses requirements
+- architect: Designs system architecture (complex tasks only)
+- developer: Implements code based on requirements
+- tester: Tests and validates implementations
+- delivery: Packages and deploys completed projects
+
+Activation Strategy:
+- Simple task (max 1000 tokens): [ceo, requirements_analyst, developer]
+- Medium task (max 2000 tokens): [ceo, requirements_analyst, developer, tester, delivery]
+- Complex task (max 3000 tokens): [ceo, requirements_analyst, architect, developer, tester, delivery]
+
+Output format for decisions:
 {
-  "task_id": "20260422_120446",
-  "timestamp": "2026-04-22T12:04:46+08:00",
-  "feedback": {
-    "code_quality": {
-      "readability": 4,
-      "standards_compliance": true,
-      "performance": "0.23s"
+  "action": "delegate|analyze|coordinate|complete",
+  "target_agent": "agent_name",
+  "task": {...},
+  "reasoning": "why this decision was made"
+}"""
+
+    def _get_tools(self) -> List[ToolDefinition]:
+        return [
+            ToolDefinition(
+                name="delegate_task",
+                description="Delegate a task to a specific agent",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "agent": {"type": "string", "enum": ["requirements_analyst", "architect", "developer", "tester", "delivery"]},
+                        "task": {"type": "object"},
+                        "priority": {"type": "string", "enum": ["high", "medium", "low"]}
+                    },
+                    "required": ["agent", "task"]
+                }
+            ),
+            ToolDefinition(
+                name="analyze_complexity",
+                description="Analyze task complexity based on requirements",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "requirements": {"type": "string"},
+                        "estimated_size": {"type": "string"}
+                    },
+                    "required": ["requirements"]
+                }
+            ),
+            ToolDefinition(
+                name="check_team_status",
+                description="Check the status of all active agents",
+                input_schema={"type": "object", "properties": {}}
+            ),
+            ToolDefinition(
+                name="finalize_project",
+                description="Finalize and deliver the completed project",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "project_path": {"type": "string"},
+                        "summary": {"type": "string"}
+                    },
+                    "required": ["project_path"]
+                }
+            )
+        ]
+
+    def process(self, message: AgentMessage) -> Optional[AgentMessage]:
+        """处理消息 - LLM 驱动决策"""
+        self.status = AgentStatus.ACTIVE
+
+        # 构建 prompt 给 LLM
+        prompt = f"""User request: {message.content}
+
+Current team status: {self.active_agents}
+
+What should you do? Respond with a JSON action."""
+
+        # 调用 LLM 做决策
+        decision = self.think(prompt)
+        action = json.loads(decision)
+
+        # 执行决策
+        if action["action"] == "delegate":
+            return self._execute_delegate(action)
+        elif action["action"] == "analyze":
+            return self._execute_analyze(message)
+        elif action["action"] == "coordinate":
+            return self._execute_coordinate()
+        elif action["action"] == "complete":
+            return self._execute_complete(message)
+
+        self.status = AgentStatus.IDLE
+        return None
+
+    def _execute_delegate(self, action: Dict) -> AgentMessage:
+        """执行委托任务"""
+        agent = action["target_agent"]
+        task = action["task"]
+
+        if agent not in self.active_agents:
+            self.active_agents.append(agent)
+
+        return self.send_message(
+            recipient=agent,
+            msg_type="task_assignment",
+            content=task
+        )
+
+    def _execute_analyze(self, message: AgentMessage) -> AgentMessage:
+        """执行分析任务"""
+        return self.send_message(
+            recipient="requirements_analyst",
+            msg_type="analyze_requirements",
+            content=message.content
+        )
+
+    def _execute_coordinate(self) -> Optional[AgentMessage]:
+        """协调团队工作"""
+        return None
+
+    def _execute_complete(self, message: AgentMessage) -> AgentMessage:
+        """完成任务"""
+        self.status = AgentStatus.COMPLETED
+        return self.send_message(
+            recipient="delivery",
+            msg_type="finalize",
+            content=message.content
+        )
+```
+
+### 3.4 Developer Agent 实现真正代码生成
+
+**agents/developer.py 改造后**:
+
+```python
+"""Developer Agent - LLM Native 版本，实现真正的代码生成"""
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from .base import BaseAgent, AgentMessage, AgentStatus, ToolDefinition
+
+class DeveloperAgent(BaseAgent):
+    """Developer Agent - 负责实现代码"""
+
+    def __init__(self, project_root: str = "/home/speaker/origin_ws/ai_company"):
+        super().__init__(name="developer", agent_type="implementer")
+        self.project_root = Path(project_root)
+        self.generated_files: List[str] = []
+
+    def _get_system_prompt(self) -> str:
+        return """You are the Developer Agent of AutoEvolve Company.
+
+Your role: Implement code based on requirements and architecture.
+
+Capabilities:
+- Write Python code (data processing, models, APIs, GUIs)
+- Create project structure
+- Implement modules and integrations
+- Add proper documentation and comments
+
+Output format:
+For code generation tasks, output:
+{
+  "action": "write_file",
+  "file_path": "relative/path/to/file.py",
+  "content": "# full file content...",
+  "reasoning": "why this code solves the problem"
+}"""
+
+    def _get_tools(self) -> List[ToolDefinition]:
+        return [
+            ToolDefinition(
+                name="write_file",
+                description="Write complete code to a file",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "file_path": {"type": "string"},
+                        "content": {"type": "string"},
+                        "overwrite": {"type": "boolean"}
+                    },
+                    "required": ["file_path", "content"]
+                }
+            ),
+            ToolDefinition(
+                name="create_directory",
+                description="Create a new directory",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "path": {"type": "string"}
+                    },
+                    "required": ["path"]
+                }
+            ),
+            ToolDefinition(
+                name="read_file",
+                description="Read existing file content",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "file_path": {"type": "string"}
+                    },
+                    "required": ["file_path"]
+                }
+            )
+        ]
+
+    def process(self, message: AgentMessage) -> Optional[AgentMessage]:
+        """处理代码生成任务"""
+        self.status = AgentStatus.ACTIVE
+
+        task = message.content
+        task_type = task.get("type", "general")
+
+        if task_type == "implement":
+            result = self._implement_solution(task)
+        elif task_type == "build_module":
+            result = self._build_module(task)
+        elif task_type == "fix_issues":
+            result = self._fix_issues(task)
+        else:
+            result = self._implement_solution(task)
+
+        self.status = AgentStatus.COMPLETED
+        return self.send_message(
+            recipient=message.sender,
+            msg_type="implementation_result",
+            content=result
+        )
+
+    def _implement_solution(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """基于需求实现完整解决方案"""
+        requirements = task.get("requirements", {})
+        target_dir = task.get("target_dir", "src")
+
+        # 调用 LLM 生成代码
+        prompt = f"""Generate a complete solution based on:
+
+Requirements: {json.dumps(requirements, indent=2)}
+
+Target directory: {target_dir}
+
+Generate:
+1. Main module code
+2. Necessary supporting files
+3. Configuration
+
+Return JSON with file_path and content for each file."""
+
+        response = self.think(prompt)
+        result = json.loads(response)
+
+        # 执行文件写入
+        if result.get("action") == "write_file":
+            return self._write_files(result)
+
+        return {"status": "completed", "files_generated": []}
+
+    def _build_module(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """构建特定模块"""
+        module_type = task.get("module_type", "data")
+        specs = task.get("specs", {})
+
+        prompt = f"""Create a {module_type} module with specs:
+
+{specs}
+
+Generate complete, production-ready Python code.
+Return JSON with file_path and content."""
+
+        response = self.think(prompt)
+        result = json.loads(response)
+
+        if result.get("action") == "write_file":
+            return self._write_files(result)
+
+        return {"status": "completed"}
+
+    def _fix_issues(self, task: Dict[str, Any]) -> Dict[str, Any]:
+        """修复问题"""
+        issues = task.get("issues", [])
+        target_file = task.get("target_file", "")
+
+        prompt = f"""Fix the following issues in {target_file}:
+
+{json.dumps(issues, indent=2)}
+
+Return JSON with action 'write_file', file_path (same as input), and fixed content."""
+
+        response = self.think(prompt)
+        result = json.loads(response)
+
+        if result.get("action") == "write_file":
+            return self._write_files(result)
+
+        return {"status": "completed"}
+
+    def _write_files(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        """写入文件到磁盘"""
+        file_path = result.get("file_path", "")
+        content = result.get("content", "")
+
+        full_path = self.project_root / file_path
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(full_path, 'w') as f:
+            f.write(content)
+
+        self.generated_files.append(file_path)
+
+        return {
+            "status": "written",
+            "file_path": file_path,
+            "files_generated": self.generated_files
+        }
+```
+
+---
+
+## 4. 快速项目生成工作流
+
+### 4.1 完整工作流程
+
+```
+用户: "我要一个图片分类服务"
+
+        ↓
+
+CEO (LLM): 分析需求
+  → 调用 LLM evaluate_complexity() 评估复杂度
+  → 复杂度: medium (LLM 判断结果)
+  → 激活: [ceo, requirements_analyst, developer, tester, delivery]
+  → Token 预算: 2000
+
+        ↓
+
+Requirements Analyst (LLM):
+  → task_type: ml_pipeline
+  → data: image_dataset, augmentation
+  → goals: train_model, serve_api
+  → complexity_score: 7 (详细评估)
+  → 调用 _assess_complexity_llm() 提供多维度分析
+
+        ↓
+
+Architect (LLM - 仅复杂任务):
+  → modules: [data_loader, model, api, gui]
+  → tech_stack: [pytorch, fastapi, streamlit]
+
+        ↓
+
+Developer (LLM):
+  → 生成 src/data/image_loader.py
+  → 生成 src/models/classifier.py
+  → 生成 src/api/endpoints.py
+  → 生成 main.py
+
+        ↓
+
+Tester (LLM):
+  → 生成 tests/unit/test_image_loader.py
+  → 生成 tests/unit/test_classifier.py
+  → 生成 tests/integration/test_api.py
+
+        ↓
+
+Delivery (LLM):
+  → 生成 deployment/Dockerfile
+  → 生成 deployment/setup.py
+  → 生成 docs/README.md
+
+        ↓
+
+最终项目结构:
+autoevolve_project/
+├── src/
+│   ├── data/
+│   ├── models/
+│   ├── api/
+│   └── main.py
+├── tests/
+├── deployment/
+└── docs/
+```
+
+### 4.2 项目生成配置文件
+
+**project_generator.yaml**:
+
+```yaml
+generation_config:
+  project_name_template: "autoevolve_{task_type}_{timestamp}"
+
+  agents:
+    ceo:
+      model: claude-opus-4-6
+      max_tokens: 4096
+      temperature: 0.7
+
+    requirements_analyst:
+      model: claude-opus-4-6
+      max_tokens: 2048
+      temperature: 0.5
+
+    developer:
+      model: claude-opus-4-6
+      max_tokens: 8192
+      temperature: 0.3
+
+    tester:
+      model: claude-opus-4-6
+      max_tokens: 4096
+      temperature: 0.4
+
+    delivery:
+      model: claude-opus-4-6
+      max_tokens: 2048
+      temperature: 0.5
+
+  output:
+    base_dir: "/home/speaker/origin_ws/generated_projects"
+    overwrite: false
+    create_git_repo: true
+
+  quality:
+    require_tests: true
+    require_docs: true
+    min_test_coverage: 70
+    lint_check: true
+```
+
+### 4.3 任务到 Agent 的映射
+
+```python
+# bridge/task_mapper.py
+
+TASK_TYPE_MAPPING = {
+    "ml_pipeline": {
+        "modules": ["data_loading", "model_building", "training", "inference"],
+        "test_focus": ["data_validation", "model_evaluation"],
+        "delivery_includes": ["model_export", "inference_api"]
     },
-    "agent_performance": {
-      "requirements_analyst": {
-        "completion_rate": 100,
-        "error_rate": 0,
-        "response_time": "1.2s"
-      },
-      "developer": {
-        "completion_rate": 95,
-        "error_rate": 5,
-        "response_time": "3.5s"
-      }
+    "web_api": {
+        "modules": ["endpoints", "models", "middleware", "auth"],
+        "test_focus": ["endpoint_tests", "integration_tests"],
+        "delivery_includes": ["docker", "api_docs"]
     },
-    "skill_performance": {
-      "data_loading": {
-        "success_rate": 100,
-        "quality_score": 4,
-        "token_consumption": 150
-      },
-      "nsga2_optimization": {
-        "success_rate": 90,
-        "quality_score": 5,
-        "token_consumption": 300
-      }
+    "gui_app": {
+        "modules": ["ui", "state_management", "widgets"],
+        "test_focus": ["ui_tests", "user_flow_tests"],
+        "delivery_includes": ["executable", "installer"]
+    },
+    "data_pipeline": {
+        "modules": ["extract", "transform", "load", "monitoring"],
+        "test_focus": ["data_quality", "pipeline_tests"],
+        "delivery_includes": ["scheduler", "monitoring_dashboard"]
     }
-  }
 }
 
-7.2 进化策略
-
-7.2.1 短期优化（单次任务）
-
-触发条件：任务完成后立即执行
-
-优化内容：
-调整当前任务的Skill选择
-优化Agent协作顺序
-调整Token分配策略
-
-示例：
-
-发现：nsga2_optimization执行成功率为90%
-行动：将优先级从15提升到16
-
-7.2.2 中期优化（多次任务）
-
-触发条件：每完成10个任务或每周执行一次
-
-优化内容：
-更新Skill优先级
-调整Agent激活策略
-优化任务模板
-
-示例：
-
-发现：过去10个任务中，80%需要GUI
-行动：将GUI生成设为中等任务的默认需求
-
-7.2.3 长期优化（持续学习）
-
-触发条件：每月执行一次或发现新模式时
-
-优化内容：
-生成新的复合Skill
-优化整体架构
-更新成功模式库
-
-示例：
-
-发现：多目标优化 + 可视化是常见组合
-行动：生成新Skill "multi_objective_optimization_with_visualization"
-
-7.3 进化日志
-
-7.3.1 日志格式
-
-json
-{
-  "evolution_id": "evol_20260422_120446",
-  "timestamp": "2026-04-22T12:04:46+08:00",
-  "trigger": "task_completion",
-  "changes": [
-    {
-      "type": "skill_priority_update",
-      "skill_name": "nsga2_optimization",
-      "old_priority": 15,
-      "new_priority": 16,
-      "reason": "success_rate_increased_to_90%"
-    },
-    {
-      "type": "pattern_learning",
-      "pattern": "multi_objective_optimization_with_visualization",
-      "confidence": 0.85,
-      "action": "created_new_skill"
-    }
-  ],
-  "metrics_before": {
-    "avg_token_consumption": 1800,
-    "success_rate": 0.85
-  },
-  "metrics_after": {
-    "avg_token_consumption": 1750,
-    "success_rate": 0.88
-  }
+COMPLEXITY_ACTIVATION = {
+    "simple": ["ceo", "requirements_analyst", "developer"],
+    "medium": ["ceo", "requirements_analyst", "developer", "tester", "delivery"],
+    "complex": ["ceo", "requirements_analyst", "architect", "developer", "tester", "delivery"]
 }
+```
 
-7.3.2 版本控制
+### 4.4 LLM 驱动的复杂度评估
 
-每次进化生成一个日志文件
-每周生成一个汇总报告
-每月生成一个趋势分析
+#### 4.4.1 为什么需要 LLM 评估
 
-最佳实践
+传统规则匹配的问题：
 
-8.1 Token优化
+| 问题 | 示例 | 错误判断 |
+|------|------|---------|
+| 长度不是好指标 | "你好" * 100 | 纯垃圾但判定 complex |
+| 关键词匹配太粗糙 | "我要一个 api" | 可能简单但判定 medium |
+| 无法理解语义 | "画分布式架构图" | 只是要图片但判定 complex |
 
-8.1.1 上下文压缩技巧
+LLM 评估的优势：
+- 理解语义而非表面特征
+- 结合上下文综合判断
+- 能识别讽刺、隐喻等复杂表达
 
-使用缩写：
-   "开发工程师" → "开发"
-   "需求分析师" → "需求"
+#### 4.4.2 复杂度定义标准
 
-移除修饰词：
-   "负责核心代码实现的开发工程师" → "开发: 代码实现"
+```python
+COMPLEXITY_DEFINITIONS = {
+    "simple": """
+定义：单模块、无测试、无文档需求
+判断标准：
+- 功能单一，逻辑清晰
+- 无需外部集成（数据库、API、第三方服务）
+- 无复杂算法或优化需求
+- 代码量预估 < 200 行
+示例：
+- "打印 Hello World"
+- "实现一个计算器"
+- "写一个文件读取函数"
+    """,
 
-使用符号：
-   "如果...那么..." → "if...then..."
-   "和" → "+"
+    "medium": """
+定义：2-3个模块、需要测试和文档
+判断标准：
+- 多个功能模块需要协作
+- 需要与外部系统交互（数据库、API）
+- 有测试和文档要求
+- 代码量预估 200-1000 行
+示例：
+- "创建一个 REST API"
+- "实现用户认证系统"
+- "构建数据清洗 pipeline"
+    """,
 
-8.1.2 Agent激活优化
+    "complex": """
+定义：多模块、系统级、需要架构设计
+判断标准：
+- 需要系统级架构设计
+- 多个子系统需要协调
+- 高性能、高可用要求
+- 复杂的业务逻辑和边界情况
+- 代码量预估 > 1000 行
+示例：
+- "构建分布式微服务系统"
+- "实现多目标优化算法"
+- "创建实时数据处理平台"
+    """
+}
+```
 
-预判任务复杂度：
-   根据历史数据预测
-   用户可手动指定复杂度
+#### 4.4.3 LLM 复杂度评估 Prompt
 
-渐进式激活：
-   先激活基础Agent
-   根据执行情况动态添加
+```python
+def build_complexity_prompt(requirements: str) -> str:
+    """构建复杂度评估的 prompt"""
+    return f"""分析以下需求，判断复杂度等级。
 
-8.2 Skill管理
+需求内容：
+{requirements}
 
-8.2.1 开源Skill接入流程
+复杂度等级定义：
+- simple: 单模块、无测试、无文档需求
+- medium: 2-3个模块、需要测试和文档
+- complex: 多模块、系统级、需要架构设计
 
-评估：评估开源库的成熟度和适用性
-封装：按照标准接口封装
-测试：验证Skill的正确性
-注册：添加到Skill注册表
-文档：编写使用说明
+判断维度：
+1. 功能模块数量（1个=simple，2-3个=medium，4+=complex）
+2. 外部依赖（无=simple，少量=medium，多=complex）
+3. 测试需求（无测试=simple，有测试=medium，全面测试=complex）
+4. 文档需求（无=simple，基础=medium，完整=complex）
+5. 代码量预估（<200=simple，200-1000=medium，>1000=complex）
 
-8.2.2 Skill优先级调整
+输出格式：
+直接返回: simple / medium / complex
+后跟一行简要理由（不超过20字）
 
-定期评估：每周评估Skill表现
-动态调整：根据反馈调整优先级
-版本管理：保留历史版本
+示例输出：
+medium
+涉及API和数据库的简单CRUD应用"""
+```
 
-8.3 质量保障
+#### 4.4.4 评估结果结构
 
-8.3.1 代码质量
+```python
+@dataclass
+class ComplexityResult:
+    level: str  # "simple" | "medium" | "complex"
+    reasoning: str  # 简短理由
+    dimensions: Dict[str, Any]  # 各维度评分
 
-遵循规范：PEP 8、Google Python Style Guide
-充分注释：函数、类、模块级注释
-类型提示：使用Type Hints
+    # 详细维度
+    module_count: int  # 预估模块数
+    external_deps: List[str]  # 外部依赖列表
+    test_requirements: str  # 测试需求描述
+    estimated_lines: int  # 预估代码行数
+    risk_factors: List[str]  # 风险因素
 
-8.3.2 测试覆盖
+# CEO 根据 complexity_result 决定激活策略
+def decide_activation(result: ComplexityResult) -> List[str]:
+    if result.level == "simple":
+        return ["ceo", "requirements_analyst", "developer"]
+    elif result.level == "medium":
+        return ["ceo", "requirements_analyst", "developer", "tester", "delivery"]
+    else:
+        return ["ceo", "requirements_analyst", "architect", "developer", "tester", "delivery"]
+```
 
-单元测试：覆盖核心逻辑
-集成测试：验证模块协作
-边界测试：测试极端情况
+#### 4.4.5 实现位置
 
-8.4 文档规范
+| 组件 | 方法 | 说明 |
+|------|------|------|
+| CEO Agent | `evaluate_complexity()` | 接收需求，调用 LLM，返回复杂度 |
+| Requirements Analyst | `_assess_complexity_llm()` | 在需求分析时调用，提供详细评估 |
 
-8.4.1 技术文档
+CEO 的 `analyze_complexity` 工具使用此 prompt，Requirements Analyst 在 `process()` 方法中调用。
 
-架构说明：系统架构图、模块说明
-API文档：函数签名、参数说明、返回值
-部署指南：环境要求、安装步骤、配置说明
+---
 
-8.4.2 用户手册
+## 5. 目录结构更新
 
-快速开始：5分钟上手指南
-使用示例：常见场景示例
-FAQ：常见问题解答
+```
+/home/speaker/origin_ws/ai_company/
+├── .company/                       # 公司体核心配置
+│   ├── ceo_config.yaml
+│   ├── agent_registry.yaml
+│   ├── memory/
+│   └── evolution_log/
+│
+├── agents/                          # Agent 实现 (LLM-Native)
+│   ├── __init__.py
+│   ├── base.py                      # BaseAgent (含 LLM 调用)
+│   ├── ceo.py                       # CEO Agent (决策 + 编排)
+│   ├── requirements_analyst.py       # 需求分析
+│   ├── architect.py                 # 架构设计
+│   ├── developer.py                 # 代码生成
+│   ├── tester.py                    # 测试生成
+│   └── delivery.py                  # 交付打包
+│
+├── bridge/                          # CEO ↔ Claude Code Team 桥接
+│   ├── __init__.py
+│   ├── team_connector.py           # 连接管理
+│   ├── task_executor.py             # 任务执行
+│   └── project_scaffold.py          # 脚手架生成
+│
+├── skill_hub/                       # Skill Hub
+│   ├── registry.yaml
+│   ├── core/
+│   ├── oss/
+│   └── evolved/
+│
+├── src/                             # 原型代码 (会被目标项目覆盖)
+│   ├── data/
+│   ├── models/
+│   ├── optimization/
+│   └── gui/
+│
+├── tests/
+│   ├── unit/
+│   └── integration/
+│
+├── deployment/
+├── docs/
+├── experiments/
+│
+├── init.md                          # 本文档 - 核心架构定义
+├── project_generator.yaml           # 项目生成配置
+└── bridge/task_mapper.py            # 任务类型映射
+```
 
-附录
+---
 
-9.1 术语表
-术语   定义
-Agent   具有特定职责的AI实体
+## 6. 待实现清单
 
-Skill   可复用的功能模块
+### Phase 1: 基础架构 ✅
+- [x] 目录结构创建 (Task #9)
+- [x] CEO 配置 (Task #1)
+- [x] Agent 注册 (Task #2)
+- [x] BaseAgent 基类 (Task #7)
 
-公司体   整个AI Agent团队的统称
+### Phase 2: Agent 实现
+- [x] BaseAgent Python 类
+- [x] CEO Agent Python 类
+- [x] Requirements Analyst Python 类
+- [x] Developer Python 类
+- [ ] **LLM-Native BaseAgent 改造** (本文档定义)
+- [ ] **LLM-Native CEO Agent 改造** (本文档定义)
+- [ ] **LLM-Native Developer 改造** (本文档定义)
 
-动态激活   根据任务需求激活Agent的机制
+### Phase 3: 桥接组件
+- [ ] **team_connector.py** - CEO 到 Claude Code Team 桥接
+- [ ] **task_executor.py** - 任务执行器
+- [ ] **project_scaffold.py** - 项目脚手架生成
 
-自我迭代   基于反馈持续优化的能力
+### Phase 4: 集成测试
+- [ ] 端到端项目生成测试
+- [ ] 多类型任务测试 (ML pipeline, Web API, GUI)
 
-9.2 任务复杂度判断矩阵
-特征   简单   中等   复杂
-模块数量   1   2-3   4+
+---
 
-是否需要测试   否   是   是
+## 7. 关键设计决策
 
-是否需要文档   否   是   是
+### 7.1 为什么用 Python 类而不是其他方案?
 
-是否需要GUI   否   可选   是
+| 方案 | 优点 | 缺点 |
+|------|------|------|
+| Python 类 | 类型安全, IDE支持, 清晰继承 | 需要额外机制调用 LLM |
+| Actor 框架 (Ray/Akka) | 内置并发, 消息驱动 | 学习曲线, 依赖重 |
+| 状态机 (LangGraph) | 可视化流程, 内置工具 | 绑定特定框架 |
 
-算法复杂度   低   中   高
+**选择**: Python 类 + 手动 LLM 调用 = 平衡灵活性和控制力
 
-数据规模   小   中   大
+### 7.2 LLM 调用策略
 
-9.3 Skill接入检查清单
+- **按需调用**: 不是每个方法都调 LLM，核心决策点才调
+- **缓存结果**: 相同任务不重复调用
+- **渐进式**: 先用规则判断，复杂情况才用 LLM
 
-[ ] 是否遵循标准接口
-[ ] 是否声明了所有依赖
-[ ] 是否有完整的输入/输出说明
-[ ] 是否有使用示例
-[ ] 是否经过测试验证
-[ ] 是否有性能基准
-[ ] 是否有错误处理
-[ ] 是否有版本信息
+### 7.3 Claude Code Team 集成方式
 
-9.4 常见问题
+两种可选方案:
 
-Q1: 如何添加新的Agent？
+**方案 A - 直接 API 调用**:
+```python
+# 使用 Anthropic API 直接调用
+client = anthropic.Anthropic()
+response = client.messages.create(model="claude-opus-4-6", ...)
+```
 
-A: 
-在.company/ceo_config.yaml中定义新Agent
-实现Agent的职责和接口
-更新激活策略
-测试集成
+**方案 B - CLI 桥接**:
+```python
+# 调用 Claude Code CLI
+subprocess.run(["claude", "--team", agent_name, "--task", task])
+```
 
-Q2: 如何接入新的开源Skill？
+**推荐**: 方案 A (直接 API) - 更可控, 无需启动子进程
 
-A:
-评估开源库的适用性
-按照标准接口封装
-在skill_hub/registry.yaml中注册
-测试验证
-更新文档
+---
 
-Q3: Token消耗过高怎么办？
+## 8. 使用示例
 
-A:
-检查是否激活了不必要的Agent
-优化上下文压缩策略
-调整Skill加载策略
-使用缓存机制
+### 8.1 启动项目生成
 
-Q4: 如何查看进化历史？
+```python
+from agents.ceo import CEOAgent
+from bridge.team_connector import TeamConnector
+from bridge.task_mapper import TASK_TYPE_MAPPING
 
-A:
-查看.company/evolution_log/目录
-查看每周/每月汇总报告
-分析进化趋势
+# 初始化
+ceo = CEOAgent()
+connector = TeamConnector(project_root="/home/speaker/origin_ws/generated")
 
-📝 版本历史
-版本   日期   变更内容   作者
-1.0   2026-04-22   初始版本   AI Architect
+# 接收用户请求
+user_request = "创建一个图片分类的 ML pipeline，需要 REST API 和可视化界面"
+
+# CEO 处理
+message = AgentMessage(
+    sender="user",
+    recipient="ceo",
+    msg_type="user_request",
+    content=user_request
+)
+
+response = ceo.process(message)
+
+# 触发团队执行
+if response:
+    connector.spawn_team(["requirements_analyst", "developer", "tester", "delivery"])
+    connector.delegate_task("requirements_analyst", response.content)
+```
+
+### 8.2 监控进度
+
+```python
+# 检查团队状态
+status = connector.sync_team_status()
+print(f"Active agents: {status}")
+
+# 收集结果
+for agent in ["requirements_analyst", "developer", "tester", "delivery"]:
+    result = connector.get_agent_result(agent)
+    if result:
+        print(f"{agent}: {result['status']}")
+```
+
+---
+
+## 9. 附录
+
+### 9.1 Agent System Prompt 模板
+
+每个 Agent 的 system prompt 应包含:
+1. **角色定义**: 你是谁，你的职责
+2. **能力边界**: 你能做什么，不能做什么
+3. **协作方式**: 如何和其他 Agent 配合
+4. **输出格式**: 你的标准输出格式
+
+### 9.2 消息类型定义
+
+```python
+MessageTypes = {
+    "user_request": "用户原始请求",
+    "task_assignment": "CEO 分配的任务",
+    "requirements_analyzed": "需求分析结果",
+    "architecture_ready": "架构设计完成",
+    "implementation_result": "代码实现结果",
+    "test_results": "测试执行结果",
+    "finalize": "交付最终项目"
+}
+```
+
+### 9.3 版本历史
+
+| 版本 | 日期 | 变更 |
+|------|------|------|
+| 1.0 | 2026-04-22 | 初始架构文档 |
+| 2.0 | 2026-04-22 | 添加 LLM-Native 改造方案和桥接组件设计 |
+
+---
 
 文档结束
-
-这份Markdown文档已经完整整理好了，可以直接保存为 ARCHITECTURE.md 文件，供Claude Code使用来构建初始化项目。文档包含了：
-
-完整的架构说明：6个Agent的详细职责和激活策略
-项目结构规范：完整的目录结构和配置文件
-实现方法：分阶段的实现步骤和关键技术要点
-自我迭代机制：反馈收集、进化策略和日志格式
-最佳实践：Token优化、Skill管理、质量保障等
-
-你可以直接将这份文档提供给Claude Code，它应该能够理解并构建出符合架构要求的初始化项目。

@@ -1,13 +1,14 @@
-"""CEO Agent - orchestrates all tasks and manages agent lifecycle."""
+"""CEO Agent - LLM Native 版本"""
 import yaml
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .base import BaseAgent, AgentMessage, AgentStatus
+from .base import BaseAgent, AgentMessage, AgentStatus, ToolDefinition, ComplexityResult
 
 
 class CEOAgent(BaseAgent):
-    """Chief Executive Officer agent that orchestrates the system."""
+    """CEO Agent - 战略决策者，驱动整个系统"""
 
     def __init__(self, config_path: str = "/home/speaker/origin_ws/ai_company/.company/ceo_config.yaml"):
         super().__init__(name="ceo", agent_type="orchestrator")
@@ -16,81 +17,160 @@ class CEOAgent(BaseAgent):
         self.active_agents: List[str] = []
 
     def _load_config(self) -> Dict[str, Any]:
-        """Load CEO configuration from YAML file."""
+        """加载 CEO 配置"""
         path = Path(self.config_path)
         if path.exists():
             with open(path, 'r') as f:
                 return yaml.safe_load(f)
         return {}
 
+    def _get_system_prompt(self) -> str:
+        return """You are the CEO Agent of AutoEvolve Company.
+
+Your responsibilities:
+1. Analyze incoming user requests
+2. Determine task complexity (simple/medium/complex) using LLM evaluation
+3. Decide which agents to activate based on complexity
+4. Delegate tasks to appropriate agents
+5. Monitor progress and coordinate workflow
+6. Ensure quality and timely delivery
+
+You have access to these agents:
+- requirements_analyst: Analyzes and parses requirements
+- architect: Designs system architecture (complex tasks only)
+- developer: Implements code based on requirements
+- tester: Tests and validates implementations
+- delivery: Packages and deploys completed projects
+
+Activation Strategy:
+- Simple task (max 1000 tokens): [ceo, requirements_analyst, developer]
+- Medium task (max 2000 tokens): [ceo, requirements_analyst, developer, tester, delivery]
+- Complex task (max 3000 tokens): [ceo, requirements_analyst, architect, developer, tester, delivery]
+
+Output format for decisions:
+{
+  "action": "delegate|analyze|coordinate|complete",
+  "target_agent": "agent_name",
+  "task": {...},
+  "reasoning": "why this decision was made"
+}"""
+
+    def _get_tools(self) -> List[ToolDefinition]:
+        return [
+            ToolDefinition(
+                name="delegate_task",
+                description="Delegate a task to a specific agent",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "agent": {"type": "string", "enum": ["requirements_analyst", "architect", "developer", "tester", "delivery"]},
+                        "task": {"type": "object"},
+                        "priority": {"type": "string", "enum": ["high", "medium", "low"]}
+                    },
+                    "required": ["agent", "task"]
+                }
+            ),
+            ToolDefinition(
+                name="analyze_complexity",
+                description="Analyze task complexity based on requirements using LLM",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "requirements": {"type": "string"},
+                        "estimated_size": {"type": "string"}
+                    },
+                    "required": ["requirements"]
+                }
+            ),
+            ToolDefinition(
+                name="check_team_status",
+                description="Check the status of all active agents",
+                input_schema={"type": "object", "properties": {}}
+            ),
+            ToolDefinition(
+                name="finalize_project",
+                description="Finalize and deliver the completed project",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "project_path": {"type": "string"},
+                        "summary": {"type": "string"}
+                    },
+                    "required": ["project_path"]
+                }
+            )
+        ]
+
     def process(self, message: AgentMessage) -> Optional[AgentMessage]:
-        """Process a message and determine agent activation strategy."""
+        """处理消息 - 基于复杂度评估的决策"""
         self.status = AgentStatus.ACTIVE
 
-        if message.msg_type == "task_submitted":
-            return self._handle_task_submitted(message)
-        elif message.msg_type == "agent_completed":
-            return self._handle_agent_completed(message)
-        elif message.msg_type == "task_completed":
-            return self._handle_task_completed(message)
+        # 1. 评估复杂度
+        complexity_result = self.evaluate_complexity(message.content)
 
-        self.status = AgentStatus.IDLE
-        return None
+        # 2. 根据复杂度获取激活的 Agent 列表
+        activation_list = self.get_activation_list(complexity_result.level)
+        self.active_agents = activation_list
 
-    def _handle_task_submitted(self, message: AgentMessage) -> AgentMessage:
-        """Handle a new task submission and select appropriate agents."""
-        task_content = message.content
-        complexity = self._determine_complexity(task_content)
-
-        strategy = self._select_activation_strategy(complexity)
-        self.active_agents = strategy.get("agents", [])
-
-        response_content = {
-            "strategy": strategy,
-            "selected_agents": self.active_agents,
-            "complexity": complexity
-        }
-
+        # 3. 分发给 requirements_analyst 开始工作流
         return self.send_message(
-            recipient=message.sender,
-            msg_type="strategy_selected",
-            content=response_content
+            recipient="requirements_analyst",
+            msg_type="task_assignment",
+            content={
+                "original_request": message.content,
+                "complexity": complexity_result.level,
+                "activated_agents": activation_list,
+                "complexity_details": {
+                    "token_estimate": complexity_result.estimated_tokens,
+                    "reasoning": complexity_result.reasoning
+                }
+            }
         )
 
-    def _determine_complexity(self, task_content: Any) -> str:
-        """Determine task complexity based on content."""
-        if isinstance(task_content, dict):
-            if "complexity" in task_content:
-                return task_content["complexity"]
-            if "data_size" in task_content or "requirements" in task_content:
-                return "medium"
-        return "simple"
+    def evaluate_complexity(self, requirements: str) -> ComplexityResult:
+        """使用 LLM 评估复杂度"""
+        return self._evaluate_complexity_llm(requirements)
 
-    def _select_activation_strategy(self, complexity: str) -> Dict[str, Any]:
-        """Select activation strategy based on complexity."""
-        strategies = self.config.get("ceo_config", {}).get("activation_strategy", {})
-        if complexity == "complex":
-            return strategies.get("complex_task", {})
-        elif complexity == "medium":
-            return strategies.get("medium_task", {})
-        else:
-            return strategies.get("simple_task", {})
+    def _execute_delegate(self, action: Dict) -> AgentMessage:
+        """执行委托任务"""
+        agent = action["target_agent"]
+        task = action["task"]
 
-    def _handle_agent_completed(self, message: AgentMessage) -> Optional[AgentMessage]:
-        """Handle agent completion notification."""
-        if message.sender in self.active_agents:
-            self.active_agents.remove(message.sender)
+        if agent not in self.active_agents:
+            self.active_agents.append(agent)
 
-        if not self.active_agents:
-            self.status = AgentStatus.COMPLETED
+        return self.send_message(
+            recipient=agent,
+            msg_type="task_assignment",
+            content=task
+        )
 
+    def _execute_analyze(self, message: AgentMessage) -> AgentMessage:
+        """执行分析任务"""
+        return self.send_message(
+            recipient="requirements_analyst",
+            msg_type="analyze_requirements",
+            content=message.content
+        )
+
+    def _execute_coordinate(self) -> Optional[AgentMessage]:
+        """协调团队工作"""
         return None
 
-    def _handle_task_completed(self, message: AgentMessage) -> Optional[AgentMessage]:
-        """Handle task completion."""
+    def _execute_complete(self, message: AgentMessage) -> AgentMessage:
+        """完成任务"""
         self.status = AgentStatus.COMPLETED
         return self.send_message(
             recipient="delivery",
-            msg_type="deploy",
+            msg_type="finalize",
             content=message.content
         )
+
+    def get_activation_list(self, complexity: str) -> List[str]:
+        """根据复杂度返回激活的 agent 列表"""
+        activation_map = {
+            "simple": ["ceo", "requirements_analyst", "developer"],
+            "medium": ["ceo", "requirements_analyst", "developer", "tester", "delivery"],
+            "complex": ["ceo", "requirements_analyst", "architect", "developer", "tester", "delivery"]
+        }
+        return activation_map.get(complexity, activation_map["simple"])

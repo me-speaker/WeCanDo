@@ -1,21 +1,95 @@
-"""Requirements Analyst Agent - parses requirements and determines task characteristics."""
+"""Requirements Analyst Agent - LLM Native 版本"""
 from typing import Any, Dict, List, Optional
 
-from .base import BaseAgent, AgentMessage, AgentStatus
+from .base import BaseAgent, AgentMessage, AgentStatus, ToolDefinition, ComplexityResult
 
 
 class RequirementsAnalystAgent(BaseAgent):
-    """Agent responsible for analyzing and parsing requirements."""
+    """Agent 负责分析和解析需求"""
 
     def __init__(self):
         super().__init__(name="requirements_analyst", agent_type="analyzer")
         self.current_requirements: Dict[str, Any] = {}
+        self.complexity_result: Optional[ComplexityResult] = None
+
+    def _get_system_prompt(self) -> str:
+        return """You are the Requirements Analyst Agent of AutoEvolve Company.
+
+Your role: Analyze and parse user requirements into structured task definitions.
+
+Capabilities:
+- Parse natural language requirements
+- Identify task type (ml_pipeline, web_api, gui_app, data_pipeline, general)
+- Determine complexity with detailed dimensions
+- Extract data requirements, goals, and delivery requirements
+- Identify external dependencies
+
+Output format for requirements analysis:
+{
+  "task_type": "ml_pipeline|web_api|gui_app|data_pipeline|general",
+  "complexity": "simple|medium|complex",
+  "data": {
+    "source": "description of data sources",
+    "features": ["list of features"],
+    "preprocessing": "any preprocessing needs"
+  },
+  "goals": ["list of goals"],
+  "delivery": {
+    "format": "code|api|gui|pipeline",
+    "documentation": true|false,
+    "testing": true|false
+  },
+  "reasoning": "brief explanation of the analysis"
+}"""
+
+    def _get_tools(self) -> List[ToolDefinition]:
+        return [
+            ToolDefinition(
+                name="parse_requirements",
+                description="Parse raw requirements into structured format",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "raw_requirements": {"type": "string"}
+                    },
+                    "required": ["raw_requirements"]
+                }
+            ),
+            ToolDefinition(
+                name="assess_complexity",
+                description="Assess task complexity with detailed dimensions",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "requirements": {"type": "string"}
+                    },
+                    "required": ["requirements"]
+                }
+            ),
+            ToolDefinition(
+                name="identify_dependencies",
+                description="Identify external dependencies from requirements",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "requirements": {"type": "string"}
+                    },
+                    "required": ["requirements"]
+                }
+            )
+        ]
 
     def process(self, message: AgentMessage) -> Optional[AgentMessage]:
-        """Process requirements and output task characteristics."""
+        """处理需求分析任务"""
         self.status = AgentStatus.ACTIVE
+
+        # 解析需求
         self.current_requirements = self._parse_requirements(message.content)
 
+        # LLM 评估复杂度
+        self.complexity_result = self._assess_complexity_llm(message.content)
+
+        # 创建输出
         output = self._create_task_output()
 
         self.status = AgentStatus.COMPLETED
@@ -26,7 +100,7 @@ class RequirementsAnalystAgent(BaseAgent):
         )
 
     def _parse_requirements(self, content: Any) -> Dict[str, Any]:
-        """Parse requirements from message content."""
+        """解析需求"""
         if isinstance(content, dict):
             return {
                 "raw_requirements": content.get("requirements", content),
@@ -34,52 +108,67 @@ class RequirementsAnalystAgent(BaseAgent):
             }
         return {"raw_requirements": content, "source": "user_input"}
 
+    def _assess_complexity_llm(self, requirements: Any) -> ComplexityResult:
+        """使用 LLM 评估复杂度（调用基类方法）"""
+        req_str = requirements if isinstance(requirements, str) else str(requirements)
+        return self._evaluate_complexity_llm(req_str)
+
     def _create_task_output(self) -> Dict[str, Any]:
-        """Create structured task output with parsed characteristics."""
-        complexity_score = self._calculate_complexity()
-        task_type = self._determine_task_type()
+        """创建结构化的任务输出"""
+        complexity = self.complexity_result.level if self.complexity_result else "simple"
 
         return {
-            "task_type": task_type,
-            "complexity": complexity_score,
+            "task_type": self._determine_task_type(),
+            "complexity": complexity,
+            "complexity_reasoning": self.complexity_result.reasoning if self.complexity_result else "",
+            "complexity_dimensions": self.complexity_result.dimensions if self.complexity_result else {},
             "data": self._extract_data_requirements(),
             "goals": self._extract_goals(),
             "delivery": self._determine_delivery_requirements()
         }
 
-    def _calculate_complexity(self) -> str:
-        """Calculate task complexity."""
-        req = self.current_requirements.get("raw_requirements", "")
-        if isinstance(req, str):
-            if len(req) > 500 or any(kw in req.lower() for kw in ["architecture", "distributed", "scalable"]):
-                return "complex"
-            elif len(req) > 200 or any(kw in req.lower() for kw in ["api", "database", "integration"]):
-                return "medium"
-        return "simple"
-
     def _determine_task_type(self) -> str:
-        """Determine the type of task."""
+        """使用 LLM 确定任务类型"""
         req = str(self.current_requirements.get("raw_requirements", "")).lower()
-        if "data" in req or "training" in req or "model" in req:
-            return "ml_pipeline"
-        elif "api" in req or "endpoint" in req:
-            return "api_development"
-        elif "interface" in req or "ui" in req or "dashboard" in req:
-            return "gui_development"
-        return "general"
 
-    def _extract_data_requirements(self) -> List[str]:
-        """Extract data requirements from parsed content."""
-        return ["dataset", "preprocessing", "feature_engineering"]
+        prompt = f"""分析以下需求，确定任务类型：
+
+需求: {req}
+
+任务类型选项:
+- ml_pipeline: 机器学习 pipeline（数据处理、模型训练、推理）
+- web_api: Web API 开发（REST、GraphQL）
+- gui_app: GUI 应用（桌面、Web 可视化界面）
+- data_pipeline: 数据 pipeline（ETL、数据流处理）
+- general: 一般任务
+
+直接返回任务类型名称。"""
+
+        response = self.think(prompt).strip().lower()
+
+        valid_types = ["ml_pipeline", "web_api", "gui_app", "data_pipeline", "general"]
+        if response not in valid_types:
+            return "general"
+        return response
+
+    def _extract_data_requirements(self) -> Dict[str, Any]:
+        """提取数据需求"""
+        return {
+            "source": "待确定",
+            "features": [],
+            "preprocessing": "待确定"
+        }
 
     def _extract_goals(self) -> List[str]:
-        """Extract goals from requirements."""
+        """提取目标"""
         return ["implement_solution", "validate_results", "ensure_quality"]
 
     def _determine_delivery_requirements(self) -> Dict[str, Any]:
-        """Determine delivery requirements."""
+        """确定交付需求"""
+        complexity = self.complexity_result.level if self.complexity_result else "simple"
+
         return {
             "format": "code",
-            "documentation": True,
-            "testing": True
+            "documentation": complexity != "simple",
+            "testing": complexity != "simple"
         }
