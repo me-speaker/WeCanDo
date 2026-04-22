@@ -1,0 +1,76 @@
+skill_hub:
+  version: "1.0"
+  description: "Skill registry for AutoEvolve AI Agent system"
+
+  core_skills:
+    - name: data_loading
+      category: data
+      priority: 9
+      description: "Load and preprocess data from various sources"
+      capabilities:
+        - csv_loading
+        - json_loading
+        - database_connectors
+        - api_data_fetch
+      dependencies: []
+
+    - name: model_building
+      category: ml
+      priority: 9
+      description: "Build and train machine learning models"
+      capabilities:
+        - sklearn_models
+        - neural_networks
+        - hyperparameter_tuning
+        - model_evaluation
+      dependencies:
+        - data_loading
+
+    - name: testing
+      category: quality
+      priority: 8
+      description: "Test and validate implementations"
+      capabilities:
+        - unit_tests
+        - integration_tests
+        - performance_benchmarking
+        - validation_suites
+      dependencies: []
+
+  oss_skills:
+    - name: fastapi_development
+      category: api
+      priority: 7
+      description: "Build REST APIs with FastAPI"
+      capabilities:
+        - endpoint_creation
+        - request_validation
+        - async_handlers
+        - openapi_docs
+      source: open_source
+
+    - name: visualization
+      category: gui
+      priority: 7
+      description: "Create data visualizations and dashboards"
+      capabilities:
+        - matplotlib_charts
+        - plotly_dashboards
+        - interactive_widgets
+        - real_time_updates
+      source: open_source
+
+    - name: docker_deployment
+      category: devops
+      priority: 8
+      description: "Containerize and deploy applications"
+      capabilities:
+        - dockerfile_creation
+        - compose_files
+        - container_orchestration
+        - health_monitoring
+      source: open_source
+
+  priority_threshold: 8
+  lazy_loading: true
+  cache_size: 10

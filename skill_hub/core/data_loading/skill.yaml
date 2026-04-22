@@ -1,0 +1,33 @@
+name: data_loading
+type: core
+priority: 10
+tags:
+  - data
+  - loading
+  - preprocessing
+  - csv
+  - json
+description: |
+  Core skill for loading and preprocessing data from various sources.
+  Handles CSV, JSON, Excel files and database connections.
+dependencies: []
+input_schema:
+  file_path:
+    type: string
+    description: Path to data file
+    required: true
+  format:
+    type: string
+    description: Data format (csv, json, excel)
+    default: csv
+  preprocessing:
+    type: dict
+    description: Preprocessing options (missing_values, normalization)
+    required: false
+output_schema:
+  data:
+    type: DataFrame
+    description: Loaded data as pandas DataFrame
+  metadata:
+    type: dict
+    description: Data metadata (shape, columns, dtypes)

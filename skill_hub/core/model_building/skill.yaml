@@ -1,0 +1,41 @@
+name: model_building
+type: core
+priority: 10
+tags:
+  - ml
+  - model
+  - training
+  - sklearn
+  - neural_network
+description: |
+  Core skill for building and training machine learning models.
+  Supports sklearn models, neural networks, and hyperparameter tuning.
+dependencies:
+  - data_loading
+input_schema:
+  model_type:
+    type: string
+    description: Type of model (regressor, classifier, neural_network)
+    required: true
+  data:
+    type: DataFrame
+    description: Training data
+    required: true
+  hyperparameters:
+    type: dict
+    description: Model hyperparameters
+    required: false
+  validation_split:
+    type: float
+    description: Train/val split ratio
+    default: 0.2
+output_schema:
+  model:
+    type: object
+    description: Trained model object
+  metrics:
+    type: dict
+    description: Training metrics (accuracy, loss, etc.)
+  metadata:
+    type: dict
+    description: Model metadata

@@ -1,0 +1,22 @@
+ceo_config:
+  activation_strategy:
+    simple_task:
+      agents: [ceo, requirements_analyst, developer]
+      max_token_budget: 1000
+    medium_task:
+      agents: [ceo, requirements_analyst, developer, tester, delivery]
+      max_token_budget: 2000
+    complex_task:
+      agents: [ceo, requirements_analyst, architect, developer, tester, delivery]
+      max_token_budget: 3000
+
+  evolution:
+    feedback_collection: true
+    skill_weight_adjustment: true
+    pattern_learning: true
+    evolution_frequency: per_task
+
+  skill_hub:
+    lazy_loading: true
+    cache_size: 10
+    priority_threshold: 8

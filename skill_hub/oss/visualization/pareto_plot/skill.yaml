@@ -1,0 +1,41 @@
+name: pareto_plot
+type: oss
+priority: 12
+tags:
+  - visualization
+  - plotting
+  - pareto
+  - plotly
+description: |
+  Creates interactive Pareto front plots using Plotly.
+  Visualizes multi-objective optimization results showing the trade-offs
+  between competing objectives.
+dependencies:
+  - plotly>=5.0.0
+input_schema:
+  solutions:
+    type: list
+    description: List of solution points with objective values
+    required: true
+  objectives:
+    type: list
+    description: List of objective names for axis labels
+    required: true
+  title:
+    type: string
+    description: Plot title
+    default: "Pareto Front"
+  plot_type:
+    type: string
+    description: Type of plot (scatter, line)
+    default: "scatter"
+output_schema:
+  figure:
+    type: plotly.graph_objects.Figure
+    description: Plotly figure object
+  html_path:
+    type: string
+    description: Path to saved HTML file
+  image_path:
+    type: string
+    description: Path to saved image file (optional)

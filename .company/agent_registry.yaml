@@ -1,0 +1,38 @@
+agents:
+  - name: ceo
+    role: orchestrator
+    activation_conditions:
+      - always: true
+    description: Chief Executive Officer - orchestrates all tasks and manages agent lifecycle
+
+  - name: requirements_analyst
+    role: analyzer
+    activation_conditions:
+      - trigger: task_submitted
+      - complexity_greater_than: 0
+    description: Analyzes requirements and determines task complexity
+
+  - name: architect
+    role: designer
+    activation_conditions:
+      - complexity_greater_than: 7
+    description: Designs system architecture for complex tasks
+
+  - name: developer
+    role: implementer
+    activation_conditions:
+      - always: true
+    description: Implements code based on requirements and architecture
+
+  - name: tester
+    role: validator
+    activation_conditions:
+      - complexity_greater_than: 3
+    description: Tests and validates implemented solutions
+
+  - name: delivery
+    role: deployer
+    activation_conditions:
+      - task_completed: true
+      - all_tests_passed: true
+    description: Handles deployment and delivery of completed solutions

@@ -1,0 +1,36 @@
+name: testing
+type: core
+priority: 8
+tags:
+  - testing
+  - quality
+  - unit_test
+  - integration_test
+  - pytest
+description: |
+  Core skill for testing and validating implementations.
+  Generates and runs unit tests, integration tests, and performance benchmarks.
+dependencies: []
+input_schema:
+  test_type:
+    type: string
+    description: Type of test (unit, integration, performance)
+    required: true
+  source_files:
+    type: list
+    description: Source files to test
+    required: true
+  coverage_threshold:
+    type: float
+    description: Minimum coverage percentage
+    default: 70.0
+output_schema:
+  test_results:
+    type: dict
+    description: Test execution results
+  coverage_report:
+    type: dict
+    description: Coverage statistics
+  passed:
+    type: boolean
+    description: Whether all tests passed

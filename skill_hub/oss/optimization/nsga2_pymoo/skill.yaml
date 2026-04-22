@@ -1,0 +1,49 @@
+name: nsga2_pymoo
+type: oss
+priority: 15
+tags:
+  - optimization
+  - multi-objective
+  - evolutionary
+  - nsga2
+  - pymoo
+description: |
+  NSGA-II (Non-dominated Sorting Genetic Algorithm II) implementation using pymoo library.
+  Used for multi-objective optimization problems where multiple conflicting objectives
+  need to be optimized simultaneously.
+dependencies:
+  - pymoo>=0.6.0
+input_schema:
+  objectives:
+    type: list
+    description: List of objective functions to minimize/maximize
+    required: true
+  bounds:
+    type: list
+    description: Variable bounds [[lower1, upper1], [lower2, upper2], ...]
+    required: true
+  n_variables:
+    type: integer
+    description: Number of decision variables
+    required: true
+  population_size:
+    type: integer
+    description: Population size for the genetic algorithm
+    default: 100
+  n_generations:
+    type: integer
+    description: Number of generations to run
+    default: 50
+output_schema:
+  solutions:
+    type: list
+    description: List of optimal solutions found
+  pareto_front:
+    type: list
+    description: Pareto front objectives
+  best_solution:
+    type: dict
+    description: Best solution found with objectives
+  metadata:
+    type: dict
+    description: Algorithm metadata (runtime, iterations, etc.)
