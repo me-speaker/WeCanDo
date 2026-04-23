@@ -1,2 +1,2 @@
-# we_can_do_it
+# WeCanDo
 a origin framework for ai agent teams cooperation dealing with ai prediction problems
