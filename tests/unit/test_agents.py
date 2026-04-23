@@ -1,11 +1,17 @@
 """Unit tests for agent classes."""
 import pytest
 from datetime import datetime
-from agents.base import BaseAgent, AgentMessage, AgentStatus
+from agents.base import BaseAgent, AgentMessage, AgentStatus, ToolDefinition
 
 
 class MockAgent(BaseAgent):
     """Mock agent for testing."""
+
+    def _get_system_prompt(self) -> str:
+        return "Mock agent for testing"
+
+    def _get_tools(self):
+        return []
 
     def process(self, message: AgentMessage):
         return None
@@ -92,8 +98,8 @@ class TestBaseAgent:
     def test_get_next_message(self):
         """Test getting next message from queue."""
         agent = MockAgent(name="test", agent_type="tester")
-        msg1 = agent.send_message("recipient", "TYPE1", "content1")
-        msg2 = agent.send_message("recipient", "TYPE2", "content2")
+        msg1 = agent.send_message("test", "TYPE1", "content1")
+        msg2 = agent.send_message("test", "TYPE2", "content2")
 
         agent.receive_message(msg1)
         agent.receive_message(msg2)
@@ -109,8 +115,8 @@ class TestBaseAgent:
     def test_clear_queue(self):
         """Test clearing message queue."""
         agent = MockAgent(name="test", agent_type="tester")
-        agent.receive_message(agent.send_message("r", "T", "c"))
-        agent.receive_message(agent.send_message("r", "T", "c"))
+        agent.receive_message(agent.send_message("test", "T", "c"))
+        agent.receive_message(agent.send_message("test", "T", "c"))
         assert len(agent._message_queue) == 2
 
         agent.clear_queue()

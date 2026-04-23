@@ -214,6 +214,60 @@ medium
 
     def _extract_dimensions(self, response: str) -> Dict[str, Any]:
         """从 LLM 响应中提取维度信息"""
-        return {
-            "raw_response": response
-        }
+        result = {}
+
+        # 尝试提取模块数量
+        if "module" in response.lower():
+            result["module_count"] = self._extract_number(response, r"module[\s_-]*(count|count|number|num)[:\s]*(\d+)")
+        if "module_count" not in result:
+            result["module_count"] = 0
+
+        # 尝试提取外部依赖
+        dep_keywords = ["dependency", "deps", "external", "requires", "libraries"]
+        for keyword in dep_keywords:
+            if keyword in response.lower():
+                result["has_external_deps"] = True
+                result["dep_keywords"] = keyword
+                break
+        if "has_external_deps" not in result:
+            result["has_external_deps"] = False
+
+        # 尝试提取测试需求
+        test_keywords = ["test", "coverage", "validation"]
+        for keyword in test_keywords:
+            if keyword in response.lower():
+                result["test_required"] = True
+                break
+        if "test_required" not in result:
+            result["test_required"] = False
+
+        # 尝试提取预估行数
+        lines_match = self._extract_number(response, r"(?:lines?|code)[:\s]*(\d+)")
+        if lines_match:
+            result["estimated_lines"] = lines_match
+        else:
+            result["estimated_lines"] = 0
+
+        # 尝试提取风险因素
+        risk_keywords = ["risk", "challenge", "complex", "difficult", "hard"]
+        risks = []
+        for keyword in risk_keywords:
+            if keyword in response.lower():
+                risks.append(keyword)
+        result["risk_factors"] = risks if risks else []
+
+        # 保留原始响应用于调试
+        result["raw_response"] = response
+
+        return result
+
+    def _extract_number(self, text: str, pattern: str) -> Optional[int]:
+        """从文本中提取数字"""
+        import re
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match and match.group(2):
+            try:
+                return int(match.group(2))
+            except (ValueError, IndexError):
+                pass
+        return None
