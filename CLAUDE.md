@@ -52,3 +52,25 @@
 - `bridge/` - 任务执行和协调
 - `skill_hub/` - 可复用技能库
 - `.company/` - 系统配置
+
+## 目录说明
+
+| 目录 | 说明 |
+|------|------|
+| `agents/` | AI Agent 实现 - CEO、Requirements Analyst、Architect、Developer、Tester、Delivery |
+| `bridge/` | 系统集成层 - 连接 agents、映射任务、执行和脚手架项目 |
+| `skill_hub/` | 可复用技能库 |
+| `skill_hub/core/` | 核心技能：data_loading, model_building, testing |
+| `skill_hub/oss/` | 开源技能：fastapi, visualization, optimization |
+| `skill_hub/evolved/` | 自进化技能 - 从反馈中学习 |
+| `src/` | 原型代码 - 数据处理、模型、GUI、优化模块 |
+| `docs/` | 项目文档 - 架构、用户指南、API 参考 |
+| `deployment/` | 部署配置和模板 |
+| `experiments/` | 实验性功能测试 |
+| `.company/` | 系统配置 - CEO 设置、Agent 注册表、记忆 |
+| `.company/memory/` | Agent 上下文持久化存储 |
+| `.company/evolution_log/` | 自进化审计日志 |
+| `tests/` | 系统测试 - 单元测试和集成测试 |
+| `tests/unit/` | 组件单元测试 |
+| `tests/integration/` | Agent 工作流集成测试 |
+| `.claude/` | Claude Code 配置和设置 |

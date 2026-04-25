@@ -61,6 +61,28 @@ ai_company/
 └── tests/           # System tests
 ```
 
+## Directory Description
+
+| Directory | Description |
+|-----------|-------------|
+| `agents/` | AI agent implementations. Each agent specializes in a role (CEO, Developer, Tester, etc.) |
+| `bridge/` | System integration layer - connects agents, maps tasks, executes and scaffolds projects |
+| `skill_hub/` | Reusable skill library organized by category (core, oss, evolved) |
+| `skill_hub/core/` | Core skills: data_loading, model_building, testing |
+| `skill_hub/oss/` | Open source skills: fastapi, visualization, optimization |
+| `skill_hub/evolved/` | Self-learned skills from feedback and evolution |
+| `src/` | Prototype source code - data processing, models, GUI, optimization modules |
+| `docs/` | Project documentation - architecture, user guides, API reference |
+| `deployment/` | Deployment configurations and templates |
+| `experiments/` | Experimental features and testing |
+| `.company/` | System configuration - CEO settings, agent registry, memory |
+| `.company/memory/` | Persistent memory storage for agent context |
+| `.company/evolution_log/` | Self-evolution audit trail |
+| `tests/` | System tests - unit and integration tests |
+| `tests/unit/` | Unit tests for individual components |
+| `tests/integration/` | Integration tests for agent workflows |
+| `.claude/` | Claude Code configuration and settings |
+
 ## Key Files
 
 - `agents/ceo.py` - Main entry point, orchestrates all agents
@@ -100,6 +122,38 @@ Skills are organized by category with priority levels:
 - **core/** - Priority 8-12 (data_loading, model_building, testing)
 - **oss/** - Priority 15-20 (fastapi_development, docker_deployment)
 - **evolved/** - Self-learned patterns
+
+### Project Generator
+
+Configuration for the Delivery Agent when generating finished projects:
+
+```yaml
+# project_generator.yaml
+generation_config:
+  project_name_template: "autoevolve_{task_type}_{timestamp}"
+
+  output:
+    base_dir: "/home/speaker/origin_ws/generated_projects"
+    overwrite: false
+    create_git_repo: true
+
+  quality:
+    require_tests: true
+    require_docs: true
+    min_test_coverage: 70
+    lint_check: true
+```
+
+| Setting | Description |
+|---------|-------------|
+| `project_name_template` | Naming pattern for generated projects |
+| `output.base_dir` | Where generated projects are saved |
+| `output.overwrite` | Allow overwriting existing projects |
+| `output.create_git_repo` | Initialize git repository |
+| `quality.require_tests` | Generated project must include tests |
+| `quality.require_docs` | Generated project must include documentation |
+| `quality.min_test_coverage` | Minimum 70% test coverage required |
+| `quality.lint_check` | Run linting checks on generated code |
 
 ## Self-Evolution
 
