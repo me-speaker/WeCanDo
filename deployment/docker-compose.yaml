@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  dae-elm:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    container_name: dae-elm
+    volumes:
+      - ../data:/app/data
+      - ../output:/app/output
+      - ../deployment/default_config.yaml:/app/deployment/default_config.yaml:ro
+      - ../deployment/surrogate_config.yaml:/app/deployment/surrogate_config.yaml:ro
+    environment:
+      - PYTHONPATH=/app
+      - MODEL_TYPE=NeuralNetwork
+      - DATA_INPUT_DIM=10
+      - DATA_OUTPUT_DIM=1
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

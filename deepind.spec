@@ -1,0 +1,80 @@
+# -*- mode: python ; coding: utf-8 -*-
+"""
+GUI version spec for DAE-ELM PyQt5 graphical interface.
+"""
+
+from PyInstaller.utils.hooks import collect_all
+
+# 收集 xgboost、matplotlib 和 sklearn 的所有依赖（包括原生库）
+xgboost_datas, xgboost_binaries, xgboost_hiddenimports = collect_all('xgboost')
+matplotlib_datas, matplotlib_binaries, matplotlib_hiddenimports = collect_all('matplotlib')
+sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
+
+a = Analysis(
+    ['gui_main.py'],
+    pathex=[],
+    binaries=xgboost_binaries + matplotlib_binaries + sklearn_binaries,
+    datas=[
+        ('src', 'src'),
+        ('daeelm_agents', 'daeelm_agents'),
+        ('bridge', 'bridge'),
+        ('skill_hub', 'skill_hub'),
+        ('deployment', 'deployment'),
+        ('gui', 'gui'),
+        ('docs', 'docs'),
+    ] + xgboost_datas + matplotlib_datas + sklearn_datas,
+    hiddenimports=[
+        'torch',
+        'sklearn',
+        'sklearn.ensemble',
+        'sklearn.feature_selection',
+        'xgboost',
+        'matplotlib',
+        'matplotlib.backends.backend_qt5agg',
+        'numpy',
+        'pandas',
+        'scipy',
+        'yaml',
+        'PyYAML',
+        'scikit-learn',
+        'PyQt5',
+        'PyQt5.QtCore',
+        'PyQt5.QtGui',
+        'PyQt5.QtWidgets',
+    ] + xgboost_hiddenimports + matplotlib_hiddenimports + sklearn_hiddenimports,
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='deepind',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon=None,
+)
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='deepind',
+)

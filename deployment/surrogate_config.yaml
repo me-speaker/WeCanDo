@@ -1,0 +1,40 @@
+# DeepInd 代理模型配置文件
+# 用于配置不同代理模型的参数
+
+# 代理模型类型
+# 可选: ELM, GaussianProcess, NeuralNetwork, XGBoost
+type: NeuralNetwork
+
+# 模型参数字典
+params:
+  # ---------- Extreme Learning Machine ----------
+  # input_dim: 10
+  # hidden_dim: 64
+
+  # ---------- Gaussian Process ----------
+  # input_dim: 10
+  # noise_var: 1.0e-5
+  # length_scale: 1.0
+  # output_scale: 1.0
+
+  # ---------- Neural Network ----------
+  input_dim: 10
+  hidden_dims: [128, 64, 32]
+  output_dim: 1
+  learning_rate: 0.001
+  epochs: 1000
+  batch_size: 32
+  weight_decay: 1.0e-5
+  activation: "relu"
+  dropout: 0.0
+
+  # ---------- XGBoost ----------
+  # input_dim: 10
+  # n_estimators: 100
+  # max_depth: 6
+  # learning_rate: 0.1
+  # subsample: 1.0
+  # colsample_bytree: 1.0
+  # reg_alpha: 0.0
+  # reg_lambda: 1.0
+  # min_child_weight: 1

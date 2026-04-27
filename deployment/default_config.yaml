@@ -1,0 +1,99 @@
+# DeepInd 默认配置文件
+# 包含模型和优化器的默认参数
+
+# 模型配置
+model:
+  type: NeuralNetwork
+  params:
+    # ---------- Extreme Learning Machine ----------
+    # hidden_dim: 64
+    # activation: "relu"  # 可选: "relu", "sigmoid", "tanh"
+
+    # ---------- Gaussian Process ----------
+    # noise_var: 1.0e-5
+    # length_scale: 1.0
+    # output_scale: 1.0
+
+    # ---------- Neural Network ----------
+    hidden_dims: [128, 64, 32]
+    learning_rate: 0.001
+    epochs: 1000
+    batch_size: 32
+    weight_decay: 1.0e-5
+    activation: "relu"
+    dropout: 0.0
+
+    # ---------- XGBoost ----------
+    # n_estimators: 100
+    # max_depth: 6
+    # learning_rate: 0.1
+    # subsample: 1.0
+    # colsample_bytree: 1.0
+    # reg_alpha: 0.0
+    # reg_lambda: 1.0
+    # min_child_weight: 1
+
+# 优化器配置
+optimizer:
+  type: AutoOptimizer
+  params: {}
+  # ---------- LBFGS ----------
+  # n_iter: 100
+  # tol: 1.0e-6
+  # m: 10
+  # verbose: true
+
+  # ---------- CG (Conjugate Gradient) ----------
+  # n_iter: 100
+  # tol: 1.0e-6
+  # method: "FR"  # 可选: "FR", "PR", "HS"
+  # verbose: true
+
+  # ---------- Bayesian Optimization ----------
+  # n_iter: 50
+  # n_initial: 10
+  # acquisition: "EI"  # 可选: "EI", "PI", "UCB"
+  # verbose: true
+
+  # ---------- Genetic Algorithm ----------
+  # n_iter: 100
+  # pop_size: 50
+  # mutation_rate: 0.1
+  # crossover_rate: 0.8
+  # elite_ratio: 0.1
+  # verbose: true
+
+# 数据配置
+data:
+  input_dim: 10
+  output_dim: 1
+  normalize: true
+  train_test_split: 0.8
+
+# 优化配置
+optimization:
+  bounds: null  # [[0, 1], [0, 1], ...] 变量边界
+  constraints: []  # 约束条件列表
+  n_objectives: 1  # 目标函数数量
+  is_global: false  # 是否全局优化
+
+# 训练配置
+training:
+  cross_validation: false
+  n_folds: 5
+  early_stopping: true
+  patience: 50
+
+# 可视化配置
+visualization:
+  plot_predictions: true
+  plot_uncertainty: true
+  plot_convergence: true
+  save_plots: false
+  plot_format: "png"
+
+# 日志配置
+logging:
+  level: "INFO"
+  save_log: false
+  log_file: null

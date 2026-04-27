@@ -1,0 +1,59 @@
+# DeepInd 优化器配置文件
+# 定义各种优化算法的默认参数
+
+# L-BFGS 优化器配置
+LBFGS:
+  n_iter: 100
+  tol: 1.0e-6
+  m: 10  # L-BFGS 历史步数
+  verbose: true
+
+# 共轭梯度法配置
+CG:
+  n_iter: 100
+  tol: 1.0e-6
+  method: "FR"  # FR, PR, or HS
+  verbose: true
+
+# 贝叶斯优化配置
+BAYESIAN:
+  n_iter: 50
+  n_initial: 10  # 初始采样点数量
+  acquisition: "EI"  # EI (期望改进), PI (概率改进), UCB (上置信界)
+  verbose: true
+
+# 遗传算法配置
+GENETIC:
+  n_iter: 100
+  pop_size: 50
+  mutation_rate: 0.1
+  crossover_rate: 0.8
+  elite_ratio: 0.1
+  verbose: true
+
+# 自动选择配置
+AUTO:
+  # 可用选项: LBFGS, CG, BAYESIAN, GENETIC
+  # 设置为 null 表示自动选择
+  optimizer_type: null
+  auto_select: true
+  # 当 auto_select 为 false 时使用的默认优化器
+  default_optimizer: "LBFGS"
+
+# 约束处理配置
+CONSTRAINTS:
+  penalty_factor: 1.0
+  growth_factor: 10.0
+  # 约束类型:
+  #   - le: g(x) <= 0 形式的不等式约束
+  #   - eq: h(x) = 0 形式的等式约束
+  constraints: []
+
+# 多目标优化配置
+MULTI_OBJECTIVE:
+  # 可用选项: GENETIC (NSGA-II), WEIGHTED_SUM
+  method: "GENETIC"
+  # 加权求和法权重 (当 method 为 WEIGHTED_SUM 时使用)
+  weights: [1.0, 1.0, 1.0]  # Tg, 硬度, 成本等
+  # 目标优先级 (数值越小优先级越高)
+  priorities: [1, 2, 3]

@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "generated_at": "2026-04-07",
+    "test_function": "sphere",
+    "n_train_samples": 500,
+    "n_test_samples": 100,
+    "input_dim": 10,
+    "n_warmup": 2,
+    "n_runs": 5
+  },
+  "surrogates": {
+    "ELM": {
+      "status": "error",
+      "error": "all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 500 and the array at index 1 has size 10"
+    },
+    "GaussianProcess": {
+      "fit_time_mean": 0.006435282249003649,
+      "fit_time_std": 0.0,
+      "predict_time_mean": 0.00015457118861377238,
+      "predict_time_std": 0.0,
+      "mse": 35.403982381392126,
+      "n_samples_train": 500,
+      "n_samples_test": 100,
+      "status": "success"
+    },
+    "NeuralNetwork": {
+      "fit_time_mean": 0.8717454213649034,
+      "fit_time_std": 0.0,
+      "predict_time_mean": 0.00011788057163357735,
+      "predict_time_std": 0.0,
+      "mse": 0.05275569556513015,
+      "n_samples_train": 500,
+      "n_samples_test": 100,
+      "hidden_dims": [
+        64,
+        32
+      ],
+      "epochs": 100,
+      "batch_size": 32,
+      "status": "success"
+    },
+    "XGBoost": {
+      "fit_time_mean": 0.016591956932097675,
+      "fit_time_std": 0.0,
+      "predict_time_mean": 0.00017111818306148052,
+      "predict_time_std": 0.0,
+      "mse": 1.0746738037690218,
+      "n_samples_train": 500,
+      "n_samples_test": 100,
+      "n_estimators": 50,
+      "status": "success"
+    }
+  },
+  "optimizers": {
+    "LBFGS": {
+      "success": true,
+      "n_iter": 1,
+      "final_fun": 3.521292287564662e-16,
+      "optimal_x": [
+        -5.878097106282176e-09,
+        -7.629697706956762e-09,
+        -6.161747834187992e-09,
+        -6.6916214600670765e-09,
+        -5.554895626813661e-09,
+        -6.348459716254418e-09,
+        -4.748969988088714e-09,
+        -6.175921898887715e-09,
+        -5.326924387705212e-09,
+        -4.048373136722461e-09
+      ],
+      "status": "success"
+    },
+    "CG": {
+      "success": true,
+      "n_iter": 1,
+      "final_fun": 6.484026809076821e-16,
+      "optimal_x": [
+        -7.357083137149445e-09,
+        -1.0044617637650077e-08,
+        -7.847304334118732e-09,
+        -7.700576466415643e-09,
+        -7.001305826759285e-09,
+        -8.61234064619687e-09,
+        -8.031823713061659e-09,
+        -8.735579357099788e-09,
+        -7.907641166871038e-09,
+        -6.77942324500691e-09
+      ],
+      "status": "success"
+    },
+    "Bayesian": {
+      "status": "error",
+      "error": "'>=' not supported between instances of 'NoneType' and 'float'"
+    },
+    "Genetic": {
+      "success": true,
+      "n_iter": 100,
+      "final_fun": 0.07484465508835186,
+      "status": "success"
+    }
+  }
+}

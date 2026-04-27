@@ -1,0 +1,49 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyinstaller pyqt5 torch numpy pandas scipy scikit-learn xgboost matplotlib
+
+      - name: Build GUI executable
+        run: |
+          pyinstaller deepind.spec --noconfirm
+        working-directory: ./generated/DAE_ELM
+
+      - name: Build CLI executable
+        run: |
+          pyinstaller deepind_cli.spec --noconfirm
+        working-directory: ./generated/DAE_ELM
+
+      - name: Upload GUI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepind-gui-windows
+          path: generated/DAE_ELM/dist/deepind/
+          retention-days: 30
+
+      - name: Upload CLI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepind-cli-windows
+          path: generated/DAE_ELM/dist/deepind/
+          retention-days: 30

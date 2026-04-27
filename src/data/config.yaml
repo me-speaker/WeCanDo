@@ -1,0 +1,123 @@
+# Data Generation Configuration
+# DeepInd Project
+
+# Number of samples to generate
+n_samples: 1000
+
+# Random seed for reproducibility
+random_seed: 42
+
+# Recipe data generation parameters
+recipe:
+  # Number of components per recipe
+  n_components:
+    min: 3
+    max: 10
+
+  # Component concentration ranges (weight fraction)
+  concentration:
+    min: 0.001
+    max: 0.5
+
+  # Common component categories
+  categories:
+    - resin
+    - solvent
+    - pigment
+    - additive
+    - filler
+
+  # Predefined component pool size per category
+  components_per_category: 20
+
+# Process parameter generation ranges
+process:
+  # Temperature (Celsius)
+  temperature:
+    min: 20
+    max: 200
+
+  # Pressure (MPa)
+  pressure:
+    min: 0.1
+    max: 10.0
+
+  # Mixing time (minutes)
+  mixing_time:
+    min: 5
+    max: 120
+
+  # Stirring speed (rpm)
+  stirring_speed:
+    min: 50
+    max: 2000
+
+  # pH value
+  pH:
+    min: 2.0
+    max: 12.0
+
+  # Reaction time (hours)
+  reaction_time:
+    min: 0.5
+    max: 48.0
+
+# Performance data parameters
+performance:
+  # Glass transition temperature Tg (Celsius)
+  Tg:
+    base: 80.0
+    variance: 40.0
+
+  # Viscosity (Pa.s)
+  viscosity:
+    base: 1.0
+    variance: 2.0
+    log_scale: true
+
+  # Storage modulus G' (MPa)
+  storage_modulus:
+    base: 100.0
+    variance: 50.0
+
+  # Loss modulus G'' (MPa)
+  loss_modulus:
+    base: 10.0
+    variance: 5.0
+
+  # Solvent resistance (% weight retention)
+  solvent_resistance:
+    base: 95.0
+    variance: 5.0
+
+  # Hardness (Shore D)
+  hardness:
+    base: 70.0
+    variance: 15.0
+
+  # Adhesion strength (MPa)
+  adhesion:
+    base: 5.0
+    variance: 2.0
+
+# Physical relationship coefficients
+physics:
+  # Tg dependence on composition (simplified)
+  Tg_composition_factor: 0.3
+
+  # Viscosity-temperature relationship (Arrhenius-like)
+  viscosity_temp_factor: 0.02
+
+  # Crosslinking effect on Tg
+  crosslink_Tg_factor: 15.0
+
+# Output settings
+output:
+  # Save generated data to CSV
+  save_csv: true
+
+  # Save location (relative to project root)
+  save_dir: "data/generated"
+
+  # File prefix
+  file_prefix: "synthetic"
