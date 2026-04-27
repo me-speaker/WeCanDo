@@ -27,23 +27,21 @@ jobs:
       - name: Build GUI executable
         run: |
           pyinstaller deepind.spec --noconfirm
-        working-directory: generated/DAE_ELM
 
       - name: Build CLI executable
         run: |
           pyinstaller deepind_cli.spec --noconfirm
-        working-directory: generated/DAE_ELM
 
       - name: Upload GUI artifacts
         uses: actions/upload-artifact@v4
         with:
           name: deepind-gui-windows
-          path: generated/DAE_ELM/dist/deepind
+          path: dist/deepind
           retention-days: 30
 
       - name: Upload CLI artifacts
         uses: actions/upload-artifact@v4
         with:
           name: deepind-cli-windows
-          path: generated/DAE_ELM/dist/deepind
+          path: dist/deepind
           retention-days: 30
