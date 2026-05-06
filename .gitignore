@@ -49,6 +49,3 @@ Thumbs.db
 # Project specific
 status
 *.tmp
-
-# sub projects
-generated/
