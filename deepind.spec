@@ -3,12 +3,15 @@
 GUI version spec for DAE-ELM PyQt5 graphical interface.
 """
 
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 # 收集 xgboost、matplotlib 和 sklearn 的所有依赖（包括原生库）
 xgboost_datas, xgboost_binaries, xgboost_hiddenimports = collect_all('xgboost')
 matplotlib_datas, matplotlib_binaries, matplotlib_hiddenimports = collect_all('matplotlib')
 sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
+
+# 收集 src 的所有子模块
+src_hiddenimports = collect_submodules('src')
 
 a = Analysis(
     ['gui_main.py'],
@@ -41,43 +44,7 @@ a = Analysis(
         'PyQt5.QtCore',
         'PyQt5.QtGui',
         'PyQt5.QtWidgets',
-        # src modules
-        'src.core.config_manager',
-        'src.core.registry',
-        'src.core.base',
-        'src.core.factory',
-        'src.core.runner',
-        'src.core.interfaces',
-        'src.core.interfaces.base',
-        'src.core.interfaces.config_parser',
-        'src.core.interfaces.data_loader',
-        'src.core.interfaces.model_updater',
-        'src.optimization.algorithms.auto_optimizer',
-        'src.optimization.algorithms.lbfgs',
-        'src.optimization.algorithms.cg',
-        'src.optimization.algorithms.bayesian',
-        'src.optimization.algorithms.genetic',
-        'src.optimization.algorithms.nga',
-        'src.optimization.algorithms.nsga2',
-        'src.optimization.algorithms.funcs_CG',
-        'src.optimization.algorithms.get_opt_by_CG-FR_foil',
-        'src.optimization.base',
-        'src.optimization.config_loader',
-        'src.optimization.constraints',
-        'src.models.surrogates.elm',
-        'src.models.surrogates.gaussian_process',
-        'src.models.surrogates.neural_network',
-        'src.models.surrogates.xgboost_model',
-        'src.models.surrogates.get_fit_para',
-        'src.models.surrogates.funcs_fit',
-        'src.models.postprocessors',
-        'src.features.feature_selector',
-        'src.data.preprocessing.base',
-        'src.data.preprocessing.missing_value_imputation',
-        'src.data.preprocessing.noise_reduction',
-        'src.data.preprocessing.outlier_detection',
-        'src.data.preprocessing.signal_smoothing',
-    ] + xgboost_hiddenimports + matplotlib_hiddenimports + sklearn_hiddenimports,
+    ] + xgboost_hiddenimports + matplotlib_hiddenimports + sklearn_hiddenimports + src_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
