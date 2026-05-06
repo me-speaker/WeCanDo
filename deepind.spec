@@ -47,7 +47,7 @@ a = Analysis(
     ] + xgboost_hiddenimports + matplotlib_hiddenimports + sklearn_hiddenimports + src_hiddenimports,
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=['hooks/rthook_pyinstaller.py'],
     excludes=[],
     noarchive=False,
     optimize=0,
