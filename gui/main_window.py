@@ -31,15 +31,13 @@ except ImportError as e:
     ENGINE_AVAILABLE = False
     import os
     import traceback
-    # Write to temp directory since bundled app directory may not be writable
     temp_dir = os.environ.get('TEMP', '/tmp')
     error_file = os.path.join(temp_dir, 'deepind_engine_error.log')
+    error_msg = f"Engine import error: {e}\n\nsys.frozen: {getattr(sys, 'frozen', False)}\nsys._MEIPASS: {getattr(sys, '_MEIPASS', 'N/A')}"
     try:
         with open(error_file, 'w') as f:
-            f.write(f"Engine components not available: {e}\n")
-            f.write(f"sys.frozen: {getattr(sys, 'frozen', False)}\n")
-            f.write(f"sys._MEIPASS: {getattr(sys, '_MEIPASS', 'N/A')}\n")
-            f.write(f"sys.path: {sys.path}\n")
+            f.write(error_msg)
+            f.write("\n\nTraceback:\n")
             f.write(traceback.format_exc())
     except:
         pass
