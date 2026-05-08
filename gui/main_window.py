@@ -31,14 +31,26 @@ except ImportError as e:
     ENGINE_AVAILABLE = False
     import os
     import traceback
-    temp_dir = os.environ.get('TEMP', '/tmp')
-    error_file = os.path.join(temp_dir, 'deepind_engine_error.log')
-    error_msg = f"Engine import error: {e}\n\nsys.frozen: {getattr(sys, 'frozen', False)}\nsys._MEIPASS: {getattr(sys, '_MEIPASS', 'N/A')}"
+
+    tb = traceback.format_exc()
+    error_details = f"Cannot import src modules:\n{e}\n\nFull traceback:\n{tb}"
+
+    # Save to file in executable directory
+    if getattr(sys, 'frozen', False):
+        app_dir = os.path.dirname(sys.executable)
+    else:
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+
+    log_path = os.path.join(app_dir, 'engine_error.log')
     try:
-        with open(error_file, 'w') as f:
-            f.write(error_msg)
-            f.write("\n\nTraceback:\n")
-            f.write(traceback.format_exc())
+        with open(log_path, 'w') as f:
+            f.write(error_details)
+    except:
+        pass
+
+    # Print to stderr - only works if console is enabled
+    try:
+        print(error_details, file=sys.stderr)
     except:
         pass
 
