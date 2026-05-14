@@ -1,6 +1,26 @@
 """Main window for DeepInd GUI - Industrial Tech Style."""
 
 import sys
+import os
+
+# Module-level debug logging
+DEBUG_LOG = None
+def _dbg(msg):
+    global DEBUG_LOG
+    if DEBUG_LOG is None:
+        if getattr(sys, 'frozen', False):
+            app_dir = os.path.dirname(sys.executable)
+        else:
+            app_dir = os.path.dirname(os.path.abspath(__file__))
+        DEBUG_LOG = os.path.join(app_dir, 'deepind_debug.log')
+    try:
+        with open(DEBUG_LOG, 'a') as f:
+            f.write(msg + '\n')
+    except:
+        pass
+
+_dbg("=== main_window.py loading ===")
+
 import numpy as np
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -11,11 +31,15 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QUrl, QTimer
 from PyQt5.QtGui import QIcon, QKeySequence, QDesktopServices
 
+_dbg("Imports starting...")
+
 from .project_dialog import ProjectDialog
 from .visualization import EnhancedVisualizationWidget as VisualizationWidget
 from .config_widget import ConfigWidget
 from .soft_sensing_widget import SoftSensingWidget
 from .dashboard_widget import DashboardWidget
+
+_dbg("GUI imports done, importing engine...")
 
 # Import engine components
 try:
@@ -27,13 +51,15 @@ try:
     from src.optimization.algorithms.bayesian import BayesianOptimizer
     from src.optimization.algorithms.genetic import GeneticOptimizer
     ENGINE_AVAILABLE = True
-except ImportError as e:
+    _dbg("ENGINE_AVAILABLE = True - imports succeeded")
+except Exception as e:
     ENGINE_AVAILABLE = False
-    import os
     import traceback
 
-    tb = traceback.format_exc()
-    error_details = f"Cannot import src modules:\n{e}\n\nFull traceback:\n{tb}"
+    tb_str = traceback.format_exc()
+    error_details = f"Cannot import src modules:\n{e}\n\nFull traceback:\n{tb_str}"
+
+    _dbg(f"Engine import FAILED: {e}\n{tb_str}")
 
     # Save to file in executable directory
     if getattr(sys, 'frozen', False):
@@ -42,17 +68,14 @@ except ImportError as e:
         app_dir = os.path.dirname(os.path.abspath(__file__))
 
     log_path = os.path.join(app_dir, 'engine_error.log')
-    try:
-        with open(log_path, 'w') as f:
-            f.write(error_details)
-    except:
-        pass
+    with open(log_path, 'w') as f:
+        f.write(error_details)
 
-    # Print to stderr - only works if console is enabled
-    try:
-        print(error_details, file=sys.stderr)
-    except:
-        pass
+    _dbg(f"Error logged to {log_path}")
+
+    # Force show error dialog
+    from PyQt5.QtWidgets import QMessageBox
+    QMessageBox.critical(None, "CRITICAL ERROR", f"Engine import failed!\n\nError: {e}\n\nLog saved to:\n{log_path}")
 
 # Import data importers
 try:
