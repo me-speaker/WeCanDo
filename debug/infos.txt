@@ -1,0 +1,19 @@
+No module named 'yaml'
+
+Full traceback:
+Traceback (most recent call last):
+  File "gui\main_window.py", line 22, in <module>
+    from src.core.config_manager import ConfigManager
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\__init__.py", line 5, in <module>
+    from . import cli
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\cli.py", line 13, in <module>
+    from src.core.config_parser import YAMLConfigParser
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\core\__init__.py", line 29, in <module>
+    from .config_manager import ConfigManager, create_config_manager, get_default_config_manager
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\core\config_manager.py", line 6, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
