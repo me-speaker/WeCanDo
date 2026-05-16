@@ -6,18 +6,21 @@ CLI version spec for DAE-ELM command line interface.
 from PyInstaller.utils.hooks import collect_all
 
 xgboost_datas, xgboost_binaries, xgboost_hiddenimports = collect_all('xgboost')
+matplotlib_datas, matplotlib_binaries, matplotlib_hiddenimports = collect_all('matplotlib')
+sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
+torch_datas, torch_binaries, torch_hiddenimports = collect_all('torch')
 
 a = Analysis(
     ['src/__main__.py'],
     pathex=[],
-    binaries=xgboost_binaries,
+    binaries=xgboost_binaries + matplotlib_binaries + sklearn_binaries + torch_binaries,
     datas=[
         ('src', 'src'),
         ('daeelm_agents', 'daeelm_agents'),
         ('bridge', 'bridge'),
         ('skill_hub', 'skill_hub'),
         ('deployment', 'deployment'),
-    ] + xgboost_datas,
+    ] + xgboost_datas + matplotlib_datas + sklearn_datas + torch_datas,
     hiddenimports=[
         'torch',
         'sklearn',
@@ -29,7 +32,7 @@ a = Analysis(
         'yaml',
         'PyYAML',
         'scikit-learn',
-    ] + xgboost_hiddenimports,
+    ] + xgboost_hiddenimports + matplotlib_hiddenimports + sklearn_hiddenimports + torch_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

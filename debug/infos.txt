@@ -1,25 +1,45 @@
-215 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.5
-215 INFO: Python: 3.11.9
-223 INFO: Platform: Windows-10-10.0.26100-SP0
-223 INFO: Python environment: C:\hostedtoolcache\windows\Python\3.11.9\x64
-2075 WARNING: Failed to collect submodules for 'xgboost.testing' because importing 'xgboost.testing' raised: ModuleNotFoundError: No module named 'pytest'
-5036 INFO: generated new fontManager
-5112 WARNING: Failed to collect submodules for 'matplotlib.tests' because importing 'matplotlib.tests' raised: OSError: The baseline image directory does not exist. This is most likely because the test data is not installed. You may need to install matplotlib from source to get the test data.
-2996 WARNING: Failed to collect submodules for 'sklearn.externals.array_api_compat.dask.array' because importing 'sklearn.externals.array_api_compat.dask.array' raised: ModuleNotFoundError: No module named 'dask'
+[PYI-688844:DEBUG] LOADER: running pyi_rth_mplconfig.py
+[PYI-688844:DEBUG] LOADER: running gui_main.py
 Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Scripts\pyinstaller.exe\__main__.py", line 5, in <module>
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 231, in _console_script_run
-    run()
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 215, in run
-    run_build(pyi_config, spec_file, **vars(args))
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 70, in run_build
-    PyInstaller.building.build_main.main(pyi_config, spec_file, **kwargs)
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\building\build_main.py", line 1275, in main
-    build(specfile, distpath, workpath, clean_build)
-  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\building\build_main.py", line 1213, in build
-    exec(code, spec_namespace)
-  File "deepind.spec", line 14, in <module>
-    import yaml
-ModuleNotFoundError: No module named 'yaml'
+  File "gui_main.py", line 5, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "gui\main_window.py", line 17, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "gui\soft_sensing_widget.py", line 13, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\__init__.py", line 8, in <module>
+    from . import features
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\features\__init__.py", line 46, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\features\DAE.py", line 6, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "torch\__init__.py", line 287, in <module>
+  File "torch\__init__.py", line 270, in _load_dll_libraries
+OSError: [WinError 1114] 动态链接库(DLL)初始化例程失败。 Error loading "E:\pj_scripts\DeepInd\deepind-gui-windows\_internal\torch\lib\c10.dll" or
+ one of its dependencies.
+[PYI-688844:ERROR] Failed to execute script 'gui_main' due to unhandled exception!
+[PYI-688844:DEBUG] LOADER: ERROR.
+[PYI-688844:DEBUG] LOADER: manually flushing stdout and stderr...
+[PYI-688844:DEBUG] LOADER: cleaning up Python interpreter...
+[PYI-688844:DEBUG] DYLIB: unloading Python shared library...
+[PYI-688844:DEBUG] DYLIB: unloaded Python shared library.
+[PYI-688844:DEBUG] LOADER: end of process reached!
