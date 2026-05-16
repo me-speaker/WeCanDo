@@ -10,6 +10,12 @@ xgboost_datas, xgboost_binaries, xgboost_hiddenimports = collect_all('xgboost')
 matplotlib_datas, matplotlib_binaries, matplotlib_hiddenimports = collect_all('matplotlib')
 sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
 
+# 手动添加 yaml 数据文件 - PyInstaller collect_all 对 yaml 无效
+import yaml
+import os
+_yaml_path = os.path.dirname(yaml.__file__)
+yaml_datas = [(_yaml_path, 'yaml')]
+
 # 收集 src 的所有子模块
 src_hiddenimports = collect_submodules('src')
 
@@ -25,7 +31,7 @@ a = Analysis(
         ('deployment', 'deployment'),
         ('gui', 'gui'),
         ('docs', 'docs'),
-    ] + xgboost_datas + matplotlib_datas + sklearn_datas,
+    ] + xgboost_datas + matplotlib_datas + sklearn_datas + yaml_datas,
     hiddenimports=[
         'torch',
         'sklearn',
