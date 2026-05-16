@@ -9,7 +9,14 @@ from PyInstaller.utils.hooks import collect_all, collect_submodules
 xgboost_datas, xgboost_binaries, xgboost_hiddenimports = collect_all('xgboost')
 matplotlib_datas, matplotlib_binaries, matplotlib_hiddenimports = collect_all('matplotlib')
 sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
+# 必须同时使用 'PyYAML' 和 'yaml'
 yaml_datas, yaml_binaries, yaml_hiddenimports = collect_all('PyYAML')
+yaml2_datas, yaml2_binaries, yaml2_hiddenimports = collect_all('yaml')
+
+# 合并 yaml 数据和隐式导入
+yaml_datas += yaml2_datas
+yaml_binaries += yaml2_binaries
+yaml_hiddenimports += yaml2_hiddenimports
 
 # 收集 src 的所有子模块
 src_hiddenimports = collect_submodules('src')
@@ -17,7 +24,7 @@ src_hiddenimports = collect_submodules('src')
 a = Analysis(
     ['gui_main.py'],
     pathex=[".", "src"],
-    binaries=xgboost_binaries + matplotlib_binaries + sklearn_binaries + yaml_binaries,
+    binaries=xgboost_binaries + matplotlib_binaries + sklearn_binaries + yaml_binaries + yaml2_binaries,
     datas=[
         ('src', 'src'),
         ('daeelm_agents', 'daeelm_agents'),
@@ -26,7 +33,7 @@ a = Analysis(
         ('deployment', 'deployment'),
         ('gui', 'gui'),
         ('docs', 'docs'),
-    ] + xgboost_datas + matplotlib_datas + sklearn_datas + yaml_datas,
+    ] + xgboost_datas + matplotlib_datas + sklearn_datas + yaml_datas + yaml2_datas,
     hiddenimports=[
         'torch',
         'sklearn',
