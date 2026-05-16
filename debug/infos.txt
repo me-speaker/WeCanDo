@@ -1,20 +1,25 @@
-Cannot import src modules:
-No module named 'yaml'
-
-Full traceback:
+215 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.5
+215 INFO: Python: 3.11.9
+223 INFO: Platform: Windows-10-10.0.26100-SP0
+223 INFO: Python environment: C:\hostedtoolcache\windows\Python\3.11.9\x64
+2075 WARNING: Failed to collect submodules for 'xgboost.testing' because importing 'xgboost.testing' raised: ModuleNotFoundError: No module named 'pytest'
+5036 INFO: generated new fontManager
+5112 WARNING: Failed to collect submodules for 'matplotlib.tests' because importing 'matplotlib.tests' raised: OSError: The baseline image directory does not exist. This is most likely because the test data is not installed. You may need to install matplotlib from source to get the test data.
+2996 WARNING: Failed to collect submodules for 'sklearn.externals.array_api_compat.dask.array' because importing 'sklearn.externals.array_api_compat.dask.array' raised: ModuleNotFoundError: No module named 'dask'
 Traceback (most recent call last):
-  File "gui\main_window.py", line 22, in <module>
-    from src.core.config_manager import ConfigManager
-  File "pyimod02_importers.py", line 457, in exec_module
-  File "src\__init__.py", line 5, in <module>
-    from . import cli
-  File "pyimod02_importers.py", line 457, in exec_module
-  File "src\cli.py", line 13, in <module>
-    from src.core.config_parser import YAMLConfigParser
-  File "pyimod02_importers.py", line 457, in exec_module
-  File "src\core\__init__.py", line 29, in <module>
-    from .config_manager import ConfigManager, create_config_manager, get_default_config_manager
-  File "pyimod02_importers.py", line 457, in exec_module
-  File "src\core\config_manager.py", line 6, in <module>
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Scripts\pyinstaller.exe\__main__.py", line 5, in <module>
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 231, in _console_script_run
+    run()
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 215, in run
+    run_build(pyi_config, spec_file, **vars(args))
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\__main__.py", line 70, in run_build
+    PyInstaller.building.build_main.main(pyi_config, spec_file, **kwargs)
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\building\build_main.py", line 1275, in main
+    build(specfile, distpath, workpath, clean_build)
+  File "C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages\PyInstaller\building\build_main.py", line 1213, in build
+    exec(code, spec_namespace)
+  File "deepind.spec", line 14, in <module>
     import yaml
 ModuleNotFoundError: No module named 'yaml'

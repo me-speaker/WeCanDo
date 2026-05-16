@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pyinstaller pyqt5 torch numpy pandas scipy scikit-learn xgboost matplotlib
+          pip install pyinstaller pyqt5 torch numpy pandas scipy scikit-learn xgboost matplotlib pyyaml
 
       - name: Build GUI executable
         run: |
