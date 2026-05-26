@@ -29,3 +29,16 @@ if getattr(sys, 'frozen', False):
     src_path = os.path.join(app_dir, 'src')
     if src_path not in sys.path:
         sys.path.insert(0, src_path)
+
+    # CRITICAL: Add torch lib directory to DLL search path on Windows
+    if sys.platform == 'win32':
+        torch_lib_path = os.path.join(app_dir, 'torch', 'lib')
+        if os.path.exists(torch_lib_path):
+            os.add_dll_directory(torch_lib_path)
+            print(f"[RTDEBUG] Added DLL directory: {torch_lib_path}", file=sys.stderr)
+        else:
+            print(f"[RTDEBUG] torch lib NOT found at {torch_lib_path}", file=sys.stderr)
+            # List torch directory contents for debugging
+            torch_base = os.path.join(app_dir, 'torch')
+            if os.path.exists(torch_base):
+                print(f"[RTDEBUG] torch base contents: {sorted(os.listdir(torch_base))}", file=sys.stderr)
