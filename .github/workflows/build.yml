@@ -9,13 +9,29 @@ on:
     types: started
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
+      - name: Debug git access
+        run: |
+          echo "Testing repository access..."
+          git clone --depth=1 https://github.com/me-speaker/WeCanDo.git test-repo 2>&1 || echo "Clone failed"
+          if exist test-repo (
+            echo "Clone succeeded"
+            rmdir /s /q test-repo
+          )
+
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
