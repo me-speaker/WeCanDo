@@ -36,6 +36,9 @@ if getattr(sys, 'frozen', False):
         if os.path.exists(torch_lib_path):
             os.add_dll_directory(torch_lib_path)
             print(f"[RTDEBUG] Added DLL directory: {torch_lib_path}", file=sys.stderr)
+            # List torch DLLs for debugging
+            torch_dlls = [f for f in os.listdir(torch_lib_path) if f.endswith('.dll')]
+            print(f"[RTDEBUG] torch DLLs found: {torch_dlls}", file=sys.stderr)
         else:
             print(f"[RTDEBUG] torch lib NOT found at {torch_lib_path}", file=sys.stderr)
             # List torch directory contents for debugging
