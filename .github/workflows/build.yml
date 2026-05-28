@@ -39,7 +39,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pyinstaller pyqt5 torch --index-url https://download.pytorch.org/whl/cpu numpy pandas scipy scikit-learn xgboost matplotlib pyyaml
+          pip install pyinstaller pyqt5
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy pandas scipy scikit-learn xgboost matplotlib pyyaml
 
       - name: Build GUI executable
         run: |
