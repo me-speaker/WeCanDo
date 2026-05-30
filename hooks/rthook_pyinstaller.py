@@ -32,16 +32,37 @@ if getattr(sys, 'frozen', False):
 
     # CRITICAL: Add torch lib directory to DLL search path on Windows
     if sys.platform == 'win32':
-        torch_lib_path = os.path.join(app_dir, 'torch', 'lib')
+        base_dir = app_dir
+
+        # Add multiple DLL directories
+        dll_dirs = [
+            os.path.join(base_dir, 'torch', 'lib'),
+            os.path.join(base_dir, 'numpy.libs'),
+            os.path.join(base_dir, 'scipy.libs'),
+            base_dir,
+        ]
+
+        for d in dll_dirs:
+            if os.path.exists(d):
+                os.add_dll_directory(d)
+                print(f"[RTDEBUG] Added DLL directory: {d}", file=sys.stderr)
+
+        # Prepend to PATH for subprocesses
+        path_additions = os.pathsep.join([d for d in dll_dirs if os.path.exists(d)])
+        os.environ['PATH'] = path_additions + os.pathsep + os.environ.get('PATH', '')
+
+        # List torch DLLs
+        torch_lib_path = os.path.join(base_dir, 'torch', 'lib')
         if os.path.exists(torch_lib_path):
-            os.add_dll_directory(torch_lib_path)
-            print(f"[RTDEBUG] Added DLL directory: {torch_lib_path}", file=sys.stderr)
-            # List torch DLLs for debugging
             torch_dlls = [f for f in os.listdir(torch_lib_path) if f.endswith('.dll')]
             print(f"[RTDEBUG] torch DLLs found: {torch_dlls}", file=sys.stderr)
-        else:
-            print(f"[RTDEBUG] torch lib NOT found at {torch_lib_path}", file=sys.stderr)
-            # List torch directory contents for debugging
-            torch_base = os.path.join(app_dir, 'torch')
-            if os.path.exists(torch_base):
-                print(f"[RTDEBUG] torch base contents: {sorted(os.listdir(torch_base))}", file=sys.stderr)
+
+        # Disable CUDA for torch
+        os.environ['TORCH_CUDA_ARCHIST'] = 'disabled'
+        os.environ['CUDA_VISIBLE_DEVICES'] = ''
+        os.environ['USE_CUDA'] = '0'
+
+        # List torch directory contents for debugging
+        torch_base = os.path.join(app_dir, 'torch')
+        if os.path.exists(torch_base):
+            print(f"[RTDEBUG] torch base contents: {sorted(os.listdir(torch_base))}", file=sys.stderr)

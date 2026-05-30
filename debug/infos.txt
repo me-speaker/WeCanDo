@@ -1,6 +1,135 @@
-Run pip install --upgrade pip
-Requirement already satisfied: pip in C:\hostedtoolcache\windows\Python\3.11.9\x64\Lib\site-packages (26.1.1)
-Looking in indexes: https://download.pytorch.org/whl/cpu
-ERROR: Could not find a version that satisfies the requirement pyinstaller (from versions: none)
-ERROR: No matching distribution found for pyinstaller
-Error: Process completed with exit code 1.
+deepind.exe : [PYI-18348:DEBUG] PyInstaller Bootloader 6.x
+所在位置 行:1 字符: 1
++ . .\deepind.exe > output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([PYI-18348:DEBU... Bootloader 6.x:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[PYI-18348:DEBUG] LOADER: argv[0]: F:\pj_scripts\DeepInd\deepind-gui-windows\deepind.exe
+[PYI-18348:DEBUG] LOADER: executable file: F:\pj_scripts\DeepInd\deepind-gui-windows\deepind.exe
+[PYI-18348:DEBUG] LOADER: trying to load executable-embedded archive...
+[PYI-18348:DEBUG] LOADER: attempting to open archive F:\pj_scripts\DeepInd\deepind-gui-windows\deepind.exe
+[PYI-18348:DEBUG] LOADER: cookie found at offset 0x3626A87
+[PYI-18348:DEBUG] LOADER: archive file: F:\pj_scripts\DeepInd\deepind-gui-windows\deepind.exe
+[PYI-18348:DEBUG] LOADER: application has onedir semantics...
+[PYI-18348:DEBUG] LOADER: _PYI_ARCHIVE_FILE not defined...
+[PYI-18348:DEBUG] LOADER: parent process level = -2
+[PYI-18348:DEBUG] LOADER: process level = 1
+[PYI-18348:DEBUG] LOADER: application's top-level directory: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal
+[PYI-18348:DEBUG] LOADER: calling SetDllDirectoryW: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal
+[PYI-18348:DEBUG] LOADER: splash screen is unavailable.
+[PYI-18348:DEBUG] DYLIB: attempting to pre-load bundled copy of ucrtbase.dll: F:\pj_scripts\DeepInd\deepind-gui-windows
+\_internal\ucrtbase.dll
+[PYI-18348:DEBUG] DYLIB: loading Python DLL: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal\python311.dll
+[PYI-18348:DEBUG] DYLIB: loaded Python shared library.
+[PYI-18348:DEBUG] DYLIB: imported symbols from Python shared library.
+[PYI-18348:DEBUG] LOADER: pre-initializing embedded python interpreter...
+[PYI-18348:DEBUG] LOADER: using PEP-587 API...
+[PYI-18348:DEBUG] LOADER: creating PyConfig structure...
+[PYI-18348:DEBUG] LOADER: initializing interpreter configuration...
+[PYI-18348:DEBUG] LOADER: setting program name...
+[PYI-18348:DEBUG] LOADER: setting python home path...
+[PYI-18348:DEBUG] LOADER: setting module search paths...
+[PYI-18348:DEBUG] LOADER: setting sys.argv...
+[PYI-18348:DEBUG] LOADER: applying run-time options...
+[PYI-18348:DEBUG] LOADER: starting embedded python interpreter...
+[PYI-18348:DEBUG] LOADER: setting sys._MEIPASS
+[PYI-18348:DEBUG] LOADER: importing modules from PKG/CArchive
+[PYI-18348:DEBUG] LOADER: extracted struct
+[PYI-18348:DEBUG] LOADER: running unmarshalled code object for module struct...
+[PYI-18348:DEBUG] LOADER: extracted pyimod01_archive
+[PYI-18348:DEBUG] LOADER: running unmarshalled code object for module pyimod01_archive...
+[PYI-18348:DEBUG] LOADER: extracted pyimod02_importers
+[PYI-18348:DEBUG] LOADER: running unmarshalled code object for module pyimod02_importers...
+[PYI-18348:DEBUG] LOADER: extracted pyimod03_ctypes
+[PYI-18348:DEBUG] LOADER: running unmarshalled code object for module pyimod03_ctypes...
+[PYI-18348:DEBUG] LOADER: extracted pyimod04_pywin32
+[PYI-18348:DEBUG] LOADER: running unmarshalled code object for module pyimod04_pywin32...
+[PYI-18348:DEBUG] LOADER: looking for PYZ archive TOC entry...
+[PYI-18348:DEBUG] LOADER: path to PYZ archive stored into sys._pyinstaller_pyz...
+[PYI-18348:DEBUG] LOADER: running pyiboot01_bootstrap.py
+[PYI-18348:DEBUG] LOADER: running rthook_pyinstaller.py
+[RTDEBUG] app_dir: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal
+[RTDEBUG] sys.path[:5]: ['F:\\pj_scripts\\DeepInd\\deepind-gui-windows\\_internal\\base_library.zip', 'F:\\pj_scripts\\
+DeepInd\\deepind-gui-windows\\_internal\\python3.11\\lib-dynload', 'F:\\pj_scripts\\DeepInd\\deepind-gui-windows\\_inte
+rnal']
+[RTDEBUG] app_dir contents: ['MSVCP140_ATOMIC_WAIT.dll', 'PIL', 'PyQt5', 'VCOMP140.DLL', '_asyncio.pyd', '_bz2.pyd', '_
+ctypes.pyd', '_decimal.pyd', '_elementtree.pyd', '_hashlib.pyd', '_lzma.pyd', '_multiprocessing.pyd', '_overlapped.pyd'
+, '_queue.pyd', '_socket.pyd', '_sqlite3.pyd', '_ssl.pyd', '_tcl_data', '_tk_data', '_tkinter.pyd', '_uuid.pyd', '_zone
+info.pyd', 'api-ms-win-core-console-l1-1-0.dll', 'api-ms-win-core-datetime-l1-1-0.dll', 'api-ms-win-core-debug-l1-1-0.d
+ll', 'api-ms-win-core-errorhandling-l1-1-0.dll', 'api-ms-win-core-fibers-l1-1-0.dll', 'api-ms-win-core-fibers-l1-1-1.dl
+l', 'api-ms-win-core-file-l1-1-0.dll', 'api-ms-win-core-file-l1-2-0.dll', 'api-ms-win-core-file-l2-1-0.dll', 'api-ms-wi
+n-core-handle-l1-1-0.dll', 'api-ms-win-core-heap-l1-1-0.dll', 'api-ms-win-core-interlocked-l1-1-0.dll', 'api-ms-win-cor
+e-kernel32-legacy-l1-1-1.dll', 'api-ms-win-core-libraryloader-l1-1-0.dll', 'api-ms-win-core-localization-l1-2-0.dll', '
+api-ms-win-core-memory-l1-1-0.dll', 'api-ms-win-core-namedpipe-l1-1-0.dll', 'api-ms-win-core-processenvironment-l1-1-0.
+dll', 'api-ms-win-core-processthreads-l1-1-0.dll', 'api-ms-win-core-processthreads-l1-1-1.dll', 'api-ms-win-core-profil
+e-l1-1-0.dll', 'api-ms-win-core-rtlsupport-l1-1-0.dll', 'api-ms-win-core-string-l1-1-0.dll', 'api-ms-win-core-synch-l1-
+1-0.dll', 'api-ms-win-core-synch-l1-2-0.dll', 'api-ms-win-core-sysinfo-l1-1-0.dll', 'api-ms-win-core-sysinfo-l1-2-0.dll
+', 'api-ms-win-core-timezone-l1-1-0.dll', 'api-ms-win-core-util-l1-1-0.dll', 'api-ms-win-crt-conio-l1-1-0.dll', 'api-ms
+-win-crt-convert-l1-1-0.dll', 'api-ms-win-crt-environment-l1-1-0.dll', 'api-ms-win-crt-filesystem-l1-1-0.dll', 'api-ms-
+win-crt-heap-l1-1-0.dll', 'api-ms-win-crt-locale-l1-1-0.dll', 'api-ms-win-crt-math-l1-1-0.dll', 'api-ms-win-crt-private
+-l1-1-0.dll', 'api-ms-win-crt-process-l1-1-0.dll', 'api-ms-win-crt-runtime-l1-1-0.dll', 'api-ms-win-crt-stdio-l1-1-0.dl
+l', 'api-ms-win-crt-string-l1-1-0.dll', 'api-ms-win-crt-time-l1-1-0.dll', 'api-ms-win-crt-utility-l1-1-0.dll', 'base_li
+brary.zip', 'bridge', 'contourpy', 'daeelm_agents', 'dateutil', 'deployment', 'docs', 'fontTools', 'gui', 'kiwisolver',
+ 'libcrypto-3.dll', 'libffi-8.dll', 'libssl-3.dll', 'markupsafe', 'markupsafe-3.0.3.dist-info', 'matplotlib', 'matplotl
+ib-3.10.9.dist-info', 'msvcp140.dll', 'numpy', 'numpy-2.4.6.dist-info', 'numpy.libs', 'pandas', 'pandas.libs', 'pyexpat
+.pyd', 'python3.dll', 'python311.dll', 'scikit_learn-1.8.0.dist-info', 'scipy', 'scipy.libs', 'select.pyd', 'setuptools
+-65.5.0.dist-info', 'skill_hub', 'sklearn', 'sqlite3.dll', 'src', 'tcl8', 'tcl86t.dll', 'tk86t.dll', 'torch', 'torch-2.
+12.0+cpu.dist-info', 'tzdata', 'ucrtbase.dll', 'unicodedata.pyd', 'vcruntime140.dll', 'vcruntime140_1.dll', 'xgboost', 
+'xgboost-3.2.0.dist-info', 'yaml']
+[RTDEBUG] yaml found: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal\yaml
+[RTDEBUG] Added DLL directory: F:\pj_scripts\DeepInd\deepind-gui-windows\_internal\torch\lib
+[RTDEBUG] torch DLLs found: ['c10.dll', 'libiomp5md.dll', 'libiompstubs5md.dll', 'shm.dll', 'torch.dll', 'torch_cpu.dll
+', 'torch_global_deps.dll', 'torch_python.dll', 'uv.dll']
+[PYI-18348:DEBUG] LOADER: running pyi_rth_inspect.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_pkgutil.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_multiprocessing.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_pkgres.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_setuptools.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth__tkinter.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_pyqt5.py
+[PYI-18348:DEBUG] LOADER: running pyi_rth_mplconfig.py
+[PYI-18348:DEBUG] LOADER: running gui_main.py
+Traceback (most recent call last):
+  File "gui_main.py", line 5, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "gui\main_window.py", line 17, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "gui\soft_sensing_widget.py", line 13, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\__init__.py", line 8, in <module>
+    from . import features
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\features\__init__.py", line 46, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "src\features\DAE.py", line 6, in <module>
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "torch\__init__.py", line 287, in <module>
+  File "torch\__init__.py", line 270, in _load_dll_libraries
+OSError: [WinError 1114] 动态链接库(DLL)初始化例程失败。 Error loading "F:\pj_scripts\DeepInd\deepind-gui-windows\_internal\torch\li
+b\c10.dll" or one of its dependencies.
+[PYI-18348:ERROR] Failed to execute script 'gui_main' due to unhandled exception!
+[PYI-18348:DEBUG] LOADER: ERROR.
+[PYI-18348:DEBUG] LOADER: manually flushing stdout and stderr...
+[PYI-18348:DEBUG] LOADER: cleaning up Python interpreter...
+[PYI-18348:DEBUG] DYLIB: unloading Python shared library...
+[PYI-18348:DEBUG] DYLIB: unloaded Python shared library.
+[PYI-18348:DEBUG] LOADER: end of process reached!
