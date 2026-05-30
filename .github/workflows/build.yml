@@ -40,7 +40,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install pyinstaller pyqt5
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu
           pip install numpy pandas scipy scikit-learn xgboost matplotlib pyyaml
 
       - name: Build GUI executable
